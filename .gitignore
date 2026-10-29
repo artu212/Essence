@@ -1,0 +1,11 @@
+# Configurações locais do IntelliJ
+.idea/
+*.iml
+
+# Arquivos temporários
+*.log
+.DS_Store
+Thumbs.db
+
+# Dependências futuras
+node_modules/
