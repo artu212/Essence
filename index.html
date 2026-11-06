@@ -1,16 +1,210 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <meta name="theme-color" content="#101827"/>
     <title>Essence | More than a look</title>
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="icon" href="assets/favicon.png"/>
+    <link rel="stylesheet" href="css/style.css"/>
 </head>
 <body>
-
-<h1>Essence</h1>
-<p>More than a look</p>
-
+<header class="topbar">
+    <a class="brand" href="#inicio" aria-label="Essence, início"><img class="essence-logo"
+                                                                      src="assets/logo_transparente.png"
+                                                                      alt="Essence — More than a look"></a>
+    <nav aria-label="Navegação principal"><a href="#inicio">Início</a><a href="#explorar">Explorar</a><a
+            href="#como-funciona">Como funciona</a><a class="partner-link" href="#parceiros">Cadastre seu
+        estabelecimento</a>
+        <button id="adminNav" class="nav-admin" type="button">Painel demonstrativo</button>
+    </nav>
+</header>
+<main>
+    <section class="hero" id="inicio">
+        <div class="hero-content"><span class="eyebrow">SEU PRÓXIMO MOMENTO COMEÇA AQUI</span>
+            <h1>Seu estilo. Seu tempo.<br><em>Sua essência.</em></h1>
+            <p>Descubra lugares incríveis, escolha seu serviço favorito e agende em poucos cliques. Sem criar conta.</p>
+            <a class="primary-button" href="#explorar">Encontrar um estabelecimento <span>→</span></a>
+            <div class="hero-proof"><span>✓ Agendamento simples</span><span>✓ Sem cadastro</span><span>✓ Horários disponíveis</span>
+            </div>
+        </div>
+        <div class="hero-art hero-booking-art" aria-hidden="true">
+            <div class="art-circle circle-one"></div>
+            <div class="art-circle circle-two"></div>
+            <div class="calendar-emblem">
+                <img class="calendar-icon" src="assets/icone_simbolo.svg" alt="">
+            </div>
+            <div class="booking-art-caption"><strong>Seu horário, confirmado.</strong><span>Simples assim.</span></div>
+        </div>
+    </section>
+    <section class="section explore" id="explorar">
+        <div class="section-heading">
+            <div><span class="eyebrow dark">DESCUBRA SEU LUGAR</span>
+                <h2>Encontre o cuidado ideal</h2>
+                <p>Explore estabelecimentos e escolha o atendimento perfeito para você.</p></div>
+            <span class="count" id="resultCount"></span></div>
+        <div class="search-bar"><label class="sr-only" for="search">Pesquisar estabelecimentos</label><span
+                aria-hidden="true">⌕</span><input id="search" placeholder="Buscar por nome, serviço ou categoria..."
+                                                  autocomplete="off">
+            <button id="clearSearch" type="button">Limpar</button>
+        </div>
+        <div class="filters" id="filters" aria-label="Categorias"></div>
+        <div class="business-grid" id="businessGrid"></div>
+    </section>
+    <section class="how section" id="como-funciona"><span class="eyebrow dark">SEM COMPLICAÇÃO</span>
+        <h2>Seu agendamento em 3 passos</h2>
+        <div class="steps">
+            <article><b>01</b>
+                <h3>Encontre</h3>
+                <p>Pesquise estabelecimentos, serviços e profissionais.</p></article>
+            <article><b>02</b>
+                <h3>Escolha</h3>
+                <p>Selecione serviço, profissional, data e horário.</p></article>
+            <article><b>03</b>
+                <h3>Confirme</h3>
+                <p>Informe nome e telefone. Pronto: seu horário está reservado.</p></article>
+        </div>
+    </section>
+    <section class="partner-section" id="parceiros">
+        <div class="partner-inner">
+            <div><span class="eyebrow">PARA SEU NEGÓCIO</span>
+                <h2>Seu negócio merece uma agenda mais inteligente.</h2>
+                <p>O Essence conecta seus clientes aos seus serviços e ajuda a organizar horários, profissionais e
+                    atendimentos em um só lugar.</p>
+                <div class="partner-benefits"><span>✓ Agenda organizada</span><span>✓ Serviços e equipe</span><span>✓ Reservas sem complicação</span>
+                </div>
+                <button type="button" id="partnerInterest" class="primary-button">Simular cadastro do estabelecimento
+                    →
+                </button>
+                <p class="partner-note">Este cadastro é apenas uma simulação local, sem conta, autenticação ou
+                    publicação na internet.</p></div>
+            <div class="partner-card"><span class="eyebrow dark">PARA ESTABELECIMENTOS</span>
+                <h3>Como vai funcionar?</h3>
+                <ol>
+                    <li>Crie sua conta comercial</li>
+                    <li>Cadastre o estabelecimento e sua equipe</li>
+                    <li>Configure serviços, preços e horários</li>
+                    <li>Receba e gerencie reservas</li>
+                </ol>
+                <span class="future-tag">Experimente o cadastro demonstrativo</span></div>
+        </div>
+    </section>
+</main>
+<footer>
+    <div class="brand footer-brand"><img class="essence-logo" src="assets/essence-logo.png"
+                                         alt="Essence — More than a look"></div>
+    <p>Protótipo acadêmico demonstrativo · Dados armazenados apenas neste navegador.</p><small>© 2026 Essence — Projeto
+    acadêmico</small></footer>
+<dialog id="partnerDialog" class="dialog partner-dialog">
+    <form id="partnerForm">
+        <div class="dialog-head">
+            <div><span class="eyebrow dark">CADASTRO DEMONSTRATIVO</span>
+                <h2>Seu estabelecimento no Essence</h2></div>
+            <button type="button" class="close" data-close="partnerDialog" aria-label="Fechar">×</button>
+        </div>
+        <p class="muted">Simule o cadastro de um negócio. As informações ficam somente neste navegador. Não existe conta
+            ou publicação real.</p>
+        <div class="form-grid"><label>Nome do estabelecimento<input name="businessName" required maxlength="70"
+                                                                    placeholder="Ex.: Barbearia Central"></label><label>Categoria<select
+                name="category">
+            <option>Barbearia</option>
+            <option>Salão</option>
+            <option>Estética</option>
+            <option>Spa</option>
+            <option>Petshop</option>
+            <option>Outro</option>
+        </select></label><label class="full-span">Descrição<textarea name="description" rows="2" maxlength="240"
+                                                                     required
+                                                                     placeholder="Conte aos clientes o que torna seu espaço especial"></textarea></label><label>Localização
+            (bairro/cidade)<input name="location" required placeholder="Ex.: Centro · Belo Horizonte"></label><label>Logo
+            ou imagem (opcional)<input name="image" type="file" accept="image/png,image/jpeg,image/webp"></label><label>Abre
+            às<input name="open" type="time" value="09:00" required></label><label>Fecha às<input name="close"
+                                                                                                  type="time"
+                                                                                                  value="18:00"
+                                                                                                  required></label>
+            <fieldset class="full-span weekdays">
+                <legend>Dias de atendimento</legend>
+                <label><input type="checkbox" name="day" value="1" checked> Seg</label><label><input type="checkbox"
+                                                                                                     name="day"
+                                                                                                     value="2" checked>
+                Ter</label><label><input type="checkbox" name="day" value="3" checked> Qua</label><label><input
+                    type="checkbox" name="day" value="4" checked> Qui</label><label><input type="checkbox" name="day"
+                                                                                           value="5" checked>
+                Sex</label><label><input type="checkbox" name="day" value="6" checked> Sáb</label><label><input
+                    type="checkbox" name="day" value="0"> Dom</label></fieldset>
+            <label class="full-span">Profissionais (um nome por linha)<textarea name="professionals" rows="3" required
+                                                                                placeholder="Phellipe&#10;Vitória"></textarea></label><label
+                    class="full-span">Serviços (um por linha: nome; preço; duração em minutos)<textarea name="services"
+                                                                                                        rows="4"
+                                                                                                        required
+                                                                                                        placeholder="Corte masculino; 45; 30&#10;Barba; 30; 30"></textarea></label>
+        </div>
+        <p id="partnerError" class="error" role="alert"></p>
+        <div class="dialog-actions">
+            <button type="button" class="secondary-button" data-close="partnerDialog">Cancelar</button>
+            <button type="submit" class="primary-button">Criar estabelecimento de demonstração →</button>
+        </div>
+    </form>
+</dialog>
+<dialog id="bookingDialog" class="dialog">
+    <form id="bookingForm" novalidate>
+        <div class="dialog-head">
+            <div><span class="eyebrow dark">RESERVE SEU HORÁRIO</span>
+                <h2 id="bookingTitle">Novo agendamento</h2></div>
+            <button type="button" class="close" data-close="bookingDialog" aria-label="Fechar">×</button>
+        </div>
+        <div class="booking-progress" aria-label="Etapas do agendamento"><span>1. Serviço e profissional</span><span>2. Data e horário</span><span>3. Seus dados</span>
+        </div>
+        <div class="form-grid"><label>Serviço<select id="serviceSelect"
+                                                     required></select></label><label>Profissional<select
+                id="professionalSelect" required></select></label><label>Data<input id="dateInput" type="date" required></label>
+            <fieldset class="slots">
+                <legend>Horários disponíveis</legend>
+                <div id="slotsContainer" class="slot-grid"></div>
+                <input id="timeInput" type="hidden" required></fieldset>
+            <label>Seu nome<input id="clientName" type="text" placeholder="Nome completo" maxlength="80"
+                                  required></label><label>Telefone<input id="clientPhone" type="tel"
+                                                                         placeholder="(31) 99999-9999" maxlength="20"
+                                                                         required></label></div>
+        <p id="bookingError" class="error" role="alert"></p>
+        <div class="dialog-actions">
+            <button type="button" class="secondary-button" data-close="bookingDialog">Cancelar</button>
+            <button type="submit" class="primary-button">Confirmar agendamento →</button>
+        </div>
+    </form>
+</dialog>
+<dialog id="confirmationDialog" class="dialog confirmation">
+    <div class="success-icon">✓</div>
+    <h2>Agendamento confirmado!</h2>
+    <p id="confirmationText"></p>
+    <p class="muted">Este é um protótipo: a reserva foi salva somente neste navegador, sem envio de mensagens.</p>
+    <button type="button" class="primary-button" data-close="confirmationDialog">Fechar</button>
+</dialog>
+<dialog id="adminDialog" class="dialog admin-dialog">
+    <div class="dialog-head">
+        <div><span class="eyebrow dark">ÁREA DEMONSTRATIVA</span>
+            <h2>Painel do estabelecimento</h2></div>
+        <button type="button" class="close" data-close="adminDialog" aria-label="Fechar">×</button>
+    </div>
+    <p class="muted">Acesso de demonstração, sem autenticação. Dados compartilhados apenas com este navegador.</p><label
+        class="admin-picker">Estabelecimento<select id="adminBusiness"></select></label>
+    <div class="admin-stats">
+        <div><b id="statBookings">0</b><span>Agendamentos ativos</span></div>
+        <div><b id="statClients">0</b><span>Clientes</span></div>
+        <div><b id="statServices">0</b><span>Serviços</span></div>
+    </div>
+    <div class="admin-tabs" role="tablist">
+        <button class="active" data-tab="appointments" type="button">Agenda</button>
+        <button data-tab="services" type="button">Serviços</button>
+        <button data-tab="professionals" type="button">Profissionais</button>
+        <button data-tab="clients" type="button">Clientes</button>
+    </div>
+    <div id="adminContent"></div>
+    <div class="admin-footer">
+        <button id="resetDemo" type="button" class="text-button">Restaurar dados de demonstração</button>
+    </div>
+</dialog>
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
 <script src="js/scripts.js"></script>
 </body>
 </html>
