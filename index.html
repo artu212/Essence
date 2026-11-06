@@ -37,20 +37,6 @@
             <div class="booking-art-caption"><strong>Seu horário, confirmado.</strong><span>Simples assim.</span></div>
         </div>
     </section>
-    <section class="section explore" id="explorar">
-        <div class="section-heading">
-            <div><span class="eyebrow dark">DESCUBRA SEU LUGAR</span>
-                <h2>Encontre o cuidado ideal</h2>
-                <p>Explore estabelecimentos e escolha o atendimento perfeito para você.</p></div>
-            <span class="count" id="resultCount"></span></div>
-        <div class="search-bar"><label class="sr-only" for="search">Pesquisar estabelecimentos</label><span
-                aria-hidden="true">⌕</span><input id="search" placeholder="Buscar por nome, serviço ou categoria..."
-                                                  autocomplete="off">
-            <button id="clearSearch" type="button">Limpar</button>
-        </div>
-        <div class="filters" id="filters" aria-label="Categorias"></div>
-        <div class="business-grid" id="businessGrid"></div>
-    </section>
     <section class="how section" id="como-funciona"><span class="eyebrow dark">SEM COMPLICAÇÃO</span>
         <h2>Seu agendamento em 3 passos</h2>
         <div class="steps">
@@ -64,6 +50,20 @@
                 <h3>Confirme</h3>
                 <p>Informe nome e telefone. Pronto: seu horário está reservado.</p></article>
         </div>
+    </section>
+    <section class="section explore" id="explorar">
+        <div class="section-heading">
+            <div><span class="eyebrow dark">DESCUBRA SEU LUGAR</span>
+                <h2>Encontre o cuidado ideal</h2>
+                <p>Explore estabelecimentos e escolha o atendimento perfeito para você.</p></div>
+            <span class="count" id="resultCount"></span></div>
+        <div class="search-bar"><label class="sr-only" for="search">Pesquisar estabelecimentos</label><span
+                aria-hidden="true">⌕</span><input id="search" placeholder="Buscar por nome, serviço ou categoria..."
+                                                  autocomplete="off">
+            <button id="clearSearch" type="button">Limpar</button>
+        </div>
+        <div class="filters" id="filters" aria-label="Categorias"></div>
+        <div class="business-grid" id="businessGrid"></div>
     </section>
     <section class="partner-section" id="parceiros">
         <div class="partner-inner">
@@ -157,7 +157,23 @@
         </div>
         <div class="form-grid"><label>Serviço<select id="serviceSelect"
                                                      required></select></label><label>Profissional<select
-                id="professionalSelect" required></select></label><label>Data<input id="dateInput" type="date" required></label>
+                id="professionalSelect" required></select></label><div class="booking-date-field"><span class="booking-date-label">Data</span>
+            <input id="dateInput" type="hidden" required>
+            <button id="calendarToggle" class="calendar-toggle" type="button" aria-expanded="false" aria-controls="bookingCalendar" aria-label="Escolher data">
+                <span id="calendarSelectedLabel">Selecione uma data</span><span aria-hidden="true">▦</span>
+            </button>
+            <div id="bookingCalendar" class="booking-calendar" hidden>
+                <div class="calendar-heading">
+                    <button type="button" id="calendarPrev" aria-label="Mês anterior">‹</button>
+                    <strong id="calendarMonthLabel"></strong>
+                    <button type="button" id="calendarNext" aria-label="Próximo mês">›</button>
+                </div>
+                <div class="calendar-weekdays" aria-hidden="true"><span>Dom</span><span>Seg</span><span>Ter</span><span>Qua</span><span>Qui</span><span>Sex</span><span>Sáb</span></div>
+                <div id="calendarDays" class="calendar-days" role="group" aria-label="Dias disponíveis"></div>
+                <p class="calendar-help">Datas indisponíveis ficam desabilitadas. Consulte os avisos de ausência ao lado da data.</p>
+            </div>
+        </div>
+            <div id="bookingNotices" class="booking-notices full-span" aria-live="polite" hidden></div>
             <fieldset class="slots">
                 <legend>Horários disponíveis</legend>
                 <div id="slotsContainer" class="slot-grid"></div>
@@ -172,6 +188,19 @@
             <button type="submit" class="primary-button">Confirmar agendamento →</button>
         </div>
     </form>
+</dialog>
+<dialog id="noticesDialog" class="dialog notices-dialog" aria-labelledby="noticesDialogTitle">
+    <div class="dialog-head">
+        <div>
+            <span class="eyebrow dark">COMUNICADOS DO ESTABELECIMENTO</span>
+            <h2 id="noticesDialogTitle">Avisos</h2>
+        </div>
+        <button type="button" class="close" data-close="noticesDialog" aria-label="Fechar avisos">×</button>
+    </div>
+    <div id="noticesDialogContent" class="notices-dialog-content"></div>
+    <div class="dialog-actions">
+        <button type="button" class="secondary-button" data-close="noticesDialog">Voltar ao agendamento</button>
+    </div>
 </dialog>
 <dialog id="confirmationDialog" class="dialog confirmation">
     <div class="success-icon">✓</div>
@@ -198,13 +227,40 @@
         <button data-tab="services" type="button">Serviços</button>
         <button data-tab="professionals" type="button">Profissionais</button>
         <button data-tab="clients" type="button">Clientes</button>
+        <button data-tab="settings" type="button">Configurações</button>
     </div>
     <div id="adminContent"></div>
     <div class="admin-footer">
         <button id="resetDemo" type="button" class="text-button">Restaurar dados de demonstração</button>
     </div>
 </dialog>
+<dialog id="editorDialog" class="dialog essence-action-dialog" aria-labelledby="editorTitle">
+    <div class="dialog-head">
+        <div><span class="eyebrow dark">PAINEL ESSENCE</span><h2 id="editorTitle">Editar</h2></div>
+        <button type="button" class="close" data-close="editorDialog" aria-label="Fechar">×</button>
+    </div>
+    <form id="editorForm">
+        <div id="editorFields" class="essence-editor-fields"></div>
+        <p id="editorError" class="essence-form-error" role="alert"></p>
+        <div class="dialog-actions">
+            <button type="button" class="secondary-button" data-close="editorDialog">Cancelar</button>
+            <button type="submit" class="primary-button">Salvar alterações</button>
+        </div>
+    </form>
+</dialog>
+<dialog id="confirmDialog" class="dialog essence-action-dialog" aria-labelledby="confirmTitle">
+    <div class="dialog-head">
+        <div><span class="eyebrow dark">CONFIRMAÇÃO</span><h2 id="confirmTitle">Confirmar ação</h2></div>
+        <button type="button" class="close" data-close="confirmDialog" aria-label="Fechar">×</button>
+    </div>
+    <p id="confirmMessage" class="muted"></p>
+    <div class="dialog-actions">
+        <button type="button" class="secondary-button" data-close="confirmDialog">Voltar</button>
+        <button type="button" id="confirmAccept" class="primary-button">Confirmar</button>
+    </div>
+</dialog>
 <div id="toast" class="toast" role="status" aria-live="polite"></div>
 <script src="js/scripts.js"></script>
 </body>
 </html>
+
