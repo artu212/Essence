@@ -2466,3 +2466,127 @@ dialog.dialog[open] {
         grid-column: 1 / -1;
     }
 }
+
+/* Essence 2.0 — contas demonstrativas e correções mobile */
+.essence-account-dialog {width:min(94vw, 620px);max-height:90dvh;overflow-y:auto;}
+.essence-account-tabs {display:flex;gap:10px;flex-wrap:wrap;margin:16px 0;}
+.essence-account-form {display:grid;gap:14px;margin:12px 0;}
+.essence-account-form label {display:grid;gap:6px;min-width:0;}
+.essence-account-form input {width:100%;min-width:0;max-width:100%;font-size:16px;}
+.essence-account-details {display:grid;gap:10px;max-height:45dvh;overflow:auto;margin:14px 0;}
+.essence-checkout {width:100%;margin-top:12px;}
+button,a {touch-action:manipulation;}
+.dialog input,.dialog select,.dialog textarea {min-width:0;max-width:100%;box-sizing:border-box;font-size:16px;}
+.admin-settings,.settings-section,.admin-list,.admin-item {min-width:0;max-width:100%;}
+@media (max-width:680px) {
+    .admin-dialog {width:calc(100vw - 16px);max-width:calc(100vw - 16px);padding:16px;max-height:94dvh;overflow-y:auto;}
+    .admin-tabs {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;overflow:visible;}
+    .admin-tabs button {min-width:0;width:100%;white-space:normal;overflow-wrap:anywhere;font-size:13px;padding:10px 6px;}
+    .admin-settings input,.admin-settings select,.admin-settings textarea {width:100%;min-width:0;max-width:100%;}
+    .admin-item {flex-wrap:wrap;gap:10px;}
+    .topbar nav {flex-wrap:wrap;}
+}
+
+/* Ajuste visual: cadastro/login demonstrativos — padrão Essence */
+/* O atributo hidden precisa prevalecer sobre display:grid/flex dos formulários. */
+.essence-account-dialog [hidden] { display: none !important; }
+.essence-account-dialog { box-sizing: border-box; }
+.essence-account-dialog .essence-account-tabs { gap: 10px; }
+.essence-account-dialog .essence-account-tabs > button {
+    border: 1px solid #d8e0e9; border-radius: 10px; padding: 11px 18px;
+    background: #fff; color: #17283d; font-weight: 650;
+    transition: background .15s, border-color .15s;
+}
+.essence-account-dialog .essence-account-tabs > button.active {
+    background: #eaf3fb; border-color: #4d8abf; color: #24669d;
+}
+.essence-account-dialog .essence-account-form { gap: 16px; }
+.essence-account-dialog .essence-account-form label {
+    display: flex; flex-direction: column; gap: 7px;
+    font-size: 13px; font-weight: 650; color: #17283d;
+}
+.essence-account-dialog .essence-account-form input {
+    display: block; width: 100%; min-height: 44px; box-sizing: border-box;
+    padding: 11px 13px; border: 1px solid #d8e0e9; border-radius: 9px;
+    background: #fff; color: #17283d; font-size: 16px;
+    outline: none; box-shadow: none;
+}
+.essence-account-dialog .essence-account-form input:focus {
+    border-color: #4d8abf; box-shadow: 0 0 0 3px rgba(77,138,191,.15);
+}
+.essence-account-dialog .essence-account-form input::placeholder { color: #8594a6; }
+.essence-account-dialog .essence-account-form .primary-button {
+    width: 100%; min-height: 44px; margin-top: 5px;
+}
+@media (max-width: 680px) {
+    .essence-account-dialog { width: calc(100vw - 20px); padding: 20px; }
+    .essence-account-dialog .essence-account-tabs > button { flex: 1; }
+}
+
+/* Campos de senha seguem a mesma aparência dos demais campos do Essence. */
+.essence-account-dialog .essence-account-form input[type='password'] { appearance: none; -webkit-appearance: none; }
+
+/* Aviso de finalização do carrinho: integrado ao visual do Essence. */
+.essence-checkout-notice {
+    position: fixed;
+    right: max(16px, env(safe-area-inset-right));
+    bottom: max(18px, env(safe-area-inset-bottom));
+    z-index: 99999;
+    width: min(420px, calc(100vw - 32px));
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 18px 16px;
+    border: 1px solid #d6e3f1;
+    border-radius: 16px;
+    background: #fff;
+    color: #15273d;
+    box-shadow: 0 12px 38px rgba(12, 37, 67, .19);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(14px);
+    transition: opacity .2s ease, transform .2s ease, visibility .2s;
+    pointer-events: none;
+}
+.essence-checkout-notice.is-visible {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+    pointer-events: auto;
+}
+.essence-checkout-notice-icon {
+    flex: 0 0 30px;
+    display: grid;
+    place-items: center;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: #e7f5ee;
+    color: #197548;
+    font-weight: 800;
+}
+.essence-checkout-notice.is-error .essence-checkout-notice-icon {
+    background: #fff0ef;
+    color: #b42318;
+}
+.essence-checkout-notice-body { flex: 1; min-width: 0; }
+.essence-checkout-notice-body strong { display: block; font-size: 15px; margin-bottom: 4px; }
+.essence-checkout-notice-body p { margin: 0; font-size: 13px; line-height: 1.5; }
+.essence-checkout-notice-close {
+    flex: 0 0 auto;
+    border: 0;
+    background: transparent;
+    color: #64748b;
+    font-size: 23px;
+    line-height: 1;
+    cursor: pointer;
+    padding: 0 2px;
+}
+@media (max-width: 600px) {
+    .essence-checkout-notice {
+        left: 16px;
+        right: 16px;
+        bottom: max(16px, env(safe-area-inset-bottom));
+        width: auto;
+    }
+}

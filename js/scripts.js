@@ -22,7 +22,9 @@ const seed = {
             professionals: [{id: 'p1', name: 'Phellipe'}, {id: 'p2', name: 'Vitória'}]
         }
     ],
-    bookings: []
+    bookings: [],
+    clients: [],
+    orders: []
 };
 const $ = id => document.getElementById(id);
 const clone = value => JSON.parse(JSON.stringify(value));
@@ -36,7 +38,10 @@ function load() {
     return clone(seed)
 }
 
-let data = load(), category = 'Todos', selectedBusiness = null, editingId = null, adminTab = 'appointments';
+let data = load();
+data.clients = Array.isArray(data.clients) ? data.clients : [];
+data.orders = Array.isArray(data.orders) ? data.orders : [];
+let category = 'Todos', selectedBusiness = null, editingId = null, adminTab = 'appointments';
 let calendarView = null;
 
 function save() {
@@ -47,6 +52,131 @@ function save() {
     }
 }
 
+/* Contas locais de demonstração: nenhum segredo/senha é armazenado. */
+const CLIENT_SESSION = 'essence_client_session_v1';
+let pendingBooking = null;
+let accountMode = 'login';
+function currentClient() { return data.clients.find(c => c.id === sessionStorage.getItem(CLIENT_SESSION)) || null; }
+function openAccount(mode = 'login') {
+    $('accountError').textContent = '';
+    if (mode === 'signup' || mode === 'login') accountMode = mode;
+    renderAccount();
+    if (!$('accountDialog').open) $('accountDialog').showModal();
+}
+function renderAccount() {
+    const client = currentClient();
+    $('accountGuest').hidden = !!client;
+    $('accountLogged').hidden = !client;
+    $('loginForm').hidden = accountMode !== 'login';
+    $('signupForm').hidden = accountMode !== 'signup';
+    $('showLogin').classList.toggle('active', accountMode === 'login');
+    $('showSignup').classList.toggle('active', accountMode === 'signup');
+    $('showLogin').setAttribute('aria-pressed', String(accountMode === 'login'));
+    $('showSignup').setAttribute('aria-pressed', String(accountMode === 'signup'));
+    $('accountNav').textContent = client ? 'Minha conta' : 'Entrar / Cadastre-se';
+    if (!client) return;
+    $('accountProfile').innerHTML = `<p><strong>${escapeHtml(client.name)}</strong><br><small>${escapeHtml(client.email)} · ${escapeHtml(client.phone)}</small></p>`;
+    renderAccountDetails('appointments');
+}
+function renderAccountDetails(section) {
+    const client = currentClient(); if (!client) return;
+    if (section === 'edit') {
+        $('accountDetails').innerHTML = `<form id="profileForm" class="essence-account-form"><label>Nome<input name="name" required maxlength="80" value="${escapeHtml(client.name)}"></label><label>Telefone<input name="phone" required maxlength="20" value="${escapeHtml(client.phone)}"></label><button class="primary-button" type="submit">Salvar perfil</button></form>`;
+        return;
+    }
+    if (section === 'orders') {
+        const orders = data.orders.filter(o => o.clientId === client.id).slice().reverse();
+        $('accountDetails').innerHTML = orders.length ? orders.map(o => `<div class="admin-item"><div><strong>${escapeHtml(findBusiness(o.businessId)?.name || 'Estabelecimento')}</strong><small>${new Date(o.createdAt).toLocaleDateString('pt-BR')} · ${o.items.map(x => `${escapeHtml(x.name)} (${x.quantity}x)`).join(', ')} · ${money(o.total)} · Sem pagamento real</small></div></div>`).join('') : '<p class="muted">Nenhum pedido demonstrativo registrado.</p>';
+        return;
+    }
+    const bookings = data.bookings.filter(b => b.clientId === client.id).slice().sort((a,b) => `${b.date}${b.time}`.localeCompare(`${a.date}${a.time}`));
+    $('accountDetails').innerHTML = bookings.length ? bookings.map(b => `<div class="admin-item"><div><strong>${escapeHtml(findBusiness(b.businessId)?.name || 'Estabelecimento')} · ${escapeHtml(findService(findBusiness(b.businessId),b.serviceId)?.name || 'Serviço')}</strong><small>${localDate(b.date)} às ${escapeHtml(b.time)} · ${b.status === 'cancelled' ? 'Cancelado' : 'Ativo'}</small></div>${b.status === 'active' ? `<div class="admin-actions"><button type="button" data-my-edit="${escapeHtml(b.id)}">Reagendar</button><button type="button" data-my-cancel="${escapeHtml(b.id)}">Cancelar</button></div>` : ''}</div>`).join('') : '<p class="muted">Você ainda não possui agendamentos vinculados à conta.</p>';
+}
+$('accountNav').addEventListener('click', () => openAccount());
+$('showLogin').addEventListener('click', () => {accountMode='login';renderAccount();});
+$('showSignup').addEventListener('click', () => {accountMode='signup';renderAccount();});
+/* Fluxo exclusivamente demonstrativo: qualquer senha não vazia funciona.
+   Senhas digitadas nunca são persistidas nem comparadas com dados anteriores. */
+function finishDemoEntry(client) {
+    sessionStorage.setItem(CLIENT_SESSION, client.id);
+    $('loginCode').value = '';
+    $('signupPassword').value = '';
+    $('signupPasswordConfirm').value = '';
+    $('accountError').textContent = '';
+    renderAccount();
+    if (pendingBooking) {
+        const next = pendingBooking;
+        pendingBooking = null;
+        $('accountDialog').close();
+        openBooking(next.businessId, next.bookingId);
+    }
+}
+$('signupForm').addEventListener('submit', e => {
+    e.preventDefault();
+    const name = $('signupName').value.trim();
+    const email = $('signupEmail').value.trim().toLowerCase();
+    const phone = $('signupPhone').value.trim();
+    const password = $('signupPassword').value;
+    const confirmation = $('signupPasswordConfirm').value;
+    if (!name || !email || !phone || !password || !confirmation) {
+        $('accountError').textContent = 'Preencha todos os campos para continuar.';
+        return;
+    }
+    if (password !== confirmation) {
+        $('accountError').textContent = 'A confirmação de senha deve ser igual à senha digitada.';
+        return;
+    }
+    let client = data.clients.find(c => c.email === email);
+    if (client) {
+        // Evita duplicar o mesmo e-mail e preserva seus agendamentos anteriores.
+        client.name = name;
+        client.phone = phone;
+    } else {
+        client = {id:'c'+Date.now()+'_'+Math.random().toString(36).slice(2,6), name, email, phone};
+        data.clients.push(client);
+    }
+    save();
+    finishDemoEntry(client);
+    notify('Conta demonstrativa pronta.');
+});
+$('loginForm').addEventListener('submit', e => {
+    e.preventDefault();
+    const email = $('loginEmail').value.trim().toLowerCase();
+    const password = $('loginCode').value;
+    if (!email || !password) {
+        $('accountError').textContent = 'Informe um e-mail e qualquer senha fictícia.';
+        return;
+    }
+    let client = data.clients.find(c => c.email === email);
+    if (!client) {
+        const fallbackName = email.split('@')[0].replace(/[._-]+/g, ' ').trim() || 'Cliente demonstração';
+        client = {
+            id:'c'+Date.now()+'_'+Math.random().toString(36).slice(2,6),
+            name:fallbackName, email, phone:'Não informado'
+        };
+        data.clients.push(client);
+        save();
+    }
+    finishDemoEntry(client);
+    notify('Entrada demonstrativa realizada.');
+});
+$('accountLogout').addEventListener('click',()=>{sessionStorage.removeItem(CLIENT_SESSION);renderAccount();notify('Você saiu da conta demonstrativa.');});
+$('accountAppointments').addEventListener('click',()=>renderAccountDetails('appointments'));
+$('accountOrders').addEventListener('click',()=>renderAccountDetails('orders'));
+$('accountEdit').addEventListener('click',()=>renderAccountDetails('edit'));
+$('accountDetails').addEventListener('submit',e=>{
+    if(e.target.id!=='profileForm')return;e.preventDefault();
+    const name=e.target.elements.name.value.trim(),phone=e.target.elements.phone.value.trim(),client=currentClient();
+    if(name.length<2 || phone.replace(/\D/g,'').length<10){notify('Confira nome e telefone.');return;}
+    client.name=name;client.phone=phone;save();renderAccount();notify('Perfil demonstrativo atualizado.');
+});
+$('accountDetails').addEventListener('click',e=>{
+    const btn=e.target.closest('button');if(!btn)return;
+    const id=btn.dataset.myEdit || btn.dataset.myCancel;
+    const booking=data.bookings.find(b=>b.id===id && b.clientId===currentClient()?.id);if(!booking)return;
+    if(btn.dataset.myEdit){$('accountDialog').close();openBooking(booking.businessId,booking.id);}
+    if(btn.dataset.myCancel){askConfirmation('Cancelar agendamento','Deseja cancelar seu agendamento?',()=>{booking.status='cancelled';save();renderAccountDetails('appointments');notify('Agendamento cancelado.');},true);}
+});
 function escapeHtml(s) {
     return String(s).replace(/[&<>"']/g, ch => ({
         '&': '&amp;',
@@ -165,6 +295,18 @@ function selectOptions(items, label) {
 }
 
 function openBooking(businessId, bookingId = null) {
+    if (!currentClient()) {
+        pendingBooking = {businessId, bookingId};
+        openAccount('login');
+        notify('Entre ou cadastre-se para agendar.');
+        return;
+    }
+    if (bookingId) {
+        const existingBooking = data.bookings.find(x => x.id === bookingId);
+        if (existingBooking?.clientId && existingBooking.clientId !== currentClient().id) {
+            notify('Este agendamento pertence a outra conta demonstrativa.'); return;
+        }
+    }
     selectedBusiness = businessId;
     editingId = bookingId;
     const b = findBusiness(businessId);
@@ -180,8 +322,8 @@ function openBooking(businessId, bookingId = null) {
     $('calendarToggle').setAttribute('aria-expanded', 'false');
     $('serviceSelect').value = existing?.serviceId || b.services[0]?.id;
     $('professionalSelect').value = existing?.professionalId || b.professionals[0]?.id;
-    $('clientName').value = existing?.clientName || '';
-    $('clientPhone').value = existing?.clientPhone || '';
+    $('clientName').value = currentClient()?.name || '';
+    $('clientPhone').value = currentClient()?.phone || '';
     $('timeInput').value = existing?.time || '';
     $('bookingError').textContent = '';
     renderCalendar();
@@ -369,6 +511,7 @@ function submitBooking(e) {
         time = $('timeInput').value, name = $('clientName').value.trim(), phone = $('clientPhone').value.trim();
     const err = $('bookingError');
     err.textContent = '';
+    if (!currentClient()) { err.textContent='Entre em sua conta demonstrativa antes de confirmar.'; return; }
     if (!b || !service || !pro || !date || !time || name.length < 2 || phone.replace(/\D/g, '').length < 10) {
         err.textContent = 'Preencha nome, telefone válido, data e selecione um horário disponível.';
         return
@@ -400,6 +543,7 @@ function submitBooking(e) {
         businessId: b.id,
         serviceId: service.id,
         professionalId: pro.id,
+        clientId: currentClient().id,
         clientName: name,
         clientPhone: phone,
         date,
@@ -428,7 +572,7 @@ function renderAdmin() {
     if (!b) return;
     const active = data.bookings.filter(x => x.businessId === b.id && x.status === 'active');
     $('statBookings').textContent = active.length;
-    $('statClients').textContent = new Set(active.map(x => x.clientPhone)).size;
+    $('statClients').textContent = new Set(data.bookings.filter(x=>x.businessId===b.id).map(x=>x.clientId || x.clientPhone)).size;
     $('statServices').textContent = b.services.length;
     document.querySelectorAll('[data-tab]').forEach(btn => btn.classList.toggle('active', btn.dataset.tab === adminTab));
     let html = '';
@@ -497,11 +641,7 @@ function renderAdmin() {
     } else if (adminTab === 'professionals') {
         html = b.professionals.map(p => `<div class="admin-item"><strong>${escapeHtml(p.name)}</strong><button data-edit-professional="${p.id}">Editar</button></div>`).join('') + '<button class="secondary-button" data-add-professional="1">+ Adicionar profissional</button>'
     } else {
-        const clients = [...new Map(data.bookings.filter(x => x.businessId === b.id).map(x => [x.clientPhone, {
-            name: x.clientName,
-            phone: x.clientPhone
-        }])).values()];
-        html = clients.length ? clients.map(c => `<div class="admin-item"><strong>${escapeHtml(c.name)}</strong><small>${escapeHtml(c.phone)}</small></div>`).join('') : '<p class="muted">Clientes aparecem após realizar um agendamento.</p>'
+        html = '<p class="muted">Selecione uma seção do painel.</p>';
     }
     $('adminContent').innerHTML = `<div class="admin-list">${html}</div>`
 }
@@ -962,6 +1102,8 @@ $('resetDemo').addEventListener('click', () => {
         'Todos os agendamentos e estabelecimentos cadastrados nesta demonstração serão apagados. Apenas a 027 Barbearia permanecerá.',
         () => {
             data = clone(seed);
+            sessionStorage.removeItem(CLIENT_SESSION);
+            renderAccount();
             category = 'Todos';
             save();
             renderFilters();
@@ -1109,7 +1251,7 @@ function restoreFields(root, values) {
 
 function saveInterfaceState() {
     try {
-        const dialogs = ['partnerDialog', 'bookingDialog', 'adminDialog', 'editorDialog', 'confirmDialog', 'noticesDialog', 'confirmationDialog'];
+        const dialogs = ['accountDialog', 'partnerDialog', 'bookingDialog', 'adminDialog', 'editorDialog', 'confirmDialog', 'noticesDialog', 'confirmationDialog'];
         const state = {
             dialogs: dialogs.filter(id => $(id)?.open),
             category,
@@ -1154,10 +1296,11 @@ function restoreInterfaceState() {
     renderBusinesses();
 
     const opened = state.dialogs;
+    if (opened.includes('accountDialog')) openAccount();
     if (opened.includes('adminDialog') || opened.includes('editorDialog') || opened.includes('confirmDialog')) {
         openAdmin();
         if (findBusiness(state.adminBusiness)) $('adminBusiness').value = state.adminBusiness;
-        const validTabs = ['appointments', 'services', 'professionals', 'clients', 'settings', 'products'];
+        const validTabs = ['appointments', 'services', 'professionals', 'settings', 'products'];
         adminTab = validTabs.includes(state.adminTab) ? state.adminTab : 'appointments';
         renderAdmin();
         restoreFields($('adminContent'), state.adminFields);
@@ -1216,3 +1359,4 @@ $('adminContent').addEventListener('click', event => {
 window.addEventListener('pagehide', saveInterfaceState);
 window.addEventListener('beforeunload', saveInterfaceState);
 restoreInterfaceState();
+renderAccount();

@@ -16,6 +16,7 @@
     <nav aria-label="Navegação principal"><a href="#inicio">Início</a><a href="#explorar">Explorar</a><a
             href="#como-funciona">Como funciona</a><a class="partner-link" href="#parceiros">Cadastre seu
         estabelecimento</a>
+        <button id="accountNav" class="nav-admin" type="button">Entrar / Cadastre-se</button>
         <button id="adminNav" class="nav-admin" type="button">Painel demonstrativo</button>
     </nav>
 </header>
@@ -23,9 +24,9 @@
     <section class="hero" id="inicio">
         <div class="hero-content"><span class="eyebrow">SEU PRÓXIMO MOMENTO COMEÇA AQUI</span>
             <h1>Seu estilo. Seu tempo.<br><em>Sua essência.</em></h1>
-            <p>Descubra lugares incríveis, escolha seu serviço favorito e agende em poucos cliques. Sem criar conta.</p>
+            <p>Descubra lugares incríveis, escolha seu serviço favorito e agende em poucos cliques. Crie uma conta demonstrativa para acompanhar suas reservas.</p>
             <a class="primary-button" href="#explorar">Encontrar um estabelecimento <span>→</span></a>
-            <div class="hero-proof"><span>✓ Agendamento simples</span><span>✓ Sem cadastro</span><span>✓ Horários disponíveis</span>
+            <div class="hero-proof"><span>✓ Agendamento simples</span><span>✓ Sua conta Essence</span><span>✓ Horários disponíveis</span>
             </div>
         </div>
         <div class="hero-art hero-booking-art" aria-hidden="true">
@@ -48,7 +49,7 @@
                 <p>Selecione serviço, profissional, data e horário.</p></article>
             <article><b>03</b>
                 <h3>Confirme</h3>
-                <p>Informe nome e telefone. Pronto: seu horário está reservado.</p></article>
+                <p>Entre ou cadastre-se gratuitamente na demonstração para confirmar e acompanhar seu horário.</p></article>
         </div>
     </section>
     <section class="section explore" id="explorar">
@@ -171,6 +172,17 @@
         </div>
     </form>
 </dialog>
+<dialog id="accountDialog" class="dialog essence-account-dialog" aria-labelledby="accountTitle">
+    <div class="dialog-head"><div><span class="eyebrow dark">CONTA DEMONSTRATIVA</span><h2 id="accountTitle">Minha conta Essence</h2></div><button type="button" class="close" data-close="accountDialog" aria-label="Fechar">×</button></div>
+    <p class="muted">Protótipo local: sem autenticação real. Use apenas informações fictícias. Qualquer e-mail e senha fictícios podem ser usados. Não utilize senhas reais: elas não são verificadas nem armazenadas.</p>
+    <div id="accountGuest">
+        <div class="essence-account-tabs"><button type="button" id="showLogin" class="secondary-button">Entrar</button><button type="button" id="showSignup" class="secondary-button">Cadastre-se</button></div>
+        <form id="loginForm" class="essence-account-form"><label>E-mail<input id="loginEmail" type="email" autocomplete="off" required maxlength="120" placeholder="cliente@exemplo.com"></label><label>Senha demonstrativa<input id="loginCode" type="password" required placeholder="Digite qualquer senha fictícia" autocomplete="off"></label><button class="primary-button" type="submit">Entrar na demonstração</button></form>
+        <form id="signupForm" class="essence-account-form" hidden><label>Nome completo<input id="signupName" required maxlength="80" autocomplete="off"></label><label>E-mail<input id="signupEmail" type="email" required maxlength="120" autocomplete="off"></label><label>Telefone/WhatsApp<input id="signupPhone" type="tel" required maxlength="20" placeholder="(31) 99999-9999" autocomplete="off"></label><label>Senha<input id="signupPassword" type="password" required autocomplete="off" placeholder="Crie uma senha fictícia"></label><label>Confirmar senha<input id="signupPasswordConfirm" type="password" required autocomplete="off" placeholder="Repita a senha fictícia"></label><button class="primary-button" type="submit">Criar conta demonstrativa</button></form>
+    </div>
+    <div id="accountLogged" hidden><div id="accountProfile"></div><div class="essence-account-tabs"><button type="button" id="accountAppointments" class="secondary-button">Meus agendamentos</button><button type="button" id="accountOrders" class="secondary-button">Minhas compras</button><button type="button" id="accountEdit" class="secondary-button">Editar perfil</button></div><div id="accountDetails" class="essence-account-details"></div><button id="accountLogout" type="button" class="secondary-button">Sair da conta</button></div>
+    <p id="accountError" class="error" role="alert"></p>
+</dialog>
 <dialog id="bookingDialog" class="dialog">
     <form id="bookingForm" novalidate>
         <div class="dialog-head">
@@ -178,7 +190,7 @@
                 <h2 id="bookingTitle">Novo agendamento</h2></div>
             <button type="button" class="close" data-close="bookingDialog" aria-label="Fechar">×</button>
         </div>
-        <div class="booking-progress" aria-label="Etapas do agendamento"><span>1. Serviço e profissional</span><span>2. Data e horário</span><span>3. Seus dados</span>
+        <div class="booking-progress" aria-label="Etapas do agendamento"><span>1. Serviço e profissional</span><span>2. Data e horário</span><span>3. Confirmação da conta</span>
         </div>
         <div class="form-grid"><label>Serviço<select id="serviceSelect"
                                                      required></select></label><label>Profissional<select
@@ -203,10 +215,10 @@
                 <legend>Horários disponíveis</legend>
                 <div id="slotsContainer" class="slot-grid"></div>
                 <input id="timeInput" type="hidden" required></fieldset>
-            <label>Seu nome<input id="clientName" type="text" placeholder="Nome completo" maxlength="80"
-                                  required></label><label>Telefone<input id="clientPhone" type="tel"
-                                                                         placeholder="(31) 99999-9999" maxlength="20"
-                                                                         required></label></div>
+            <p class="muted full-span">O agendamento será vinculado à conta demonstrativa conectada.</p><label>Seu nome<input id="clientName" type="text" placeholder="Nome completo" maxlength="80"
+                                                                                                                              required></label><label>Telefone<input id="clientPhone" type="tel"
+                                                                                                                                                                     placeholder="(31) 99999-9999" maxlength="20"
+                                                                                                                                                                     required></label></div>
         <p id="bookingError" class="error" role="alert"></p>
         <div class="dialog-actions">
             <button type="button" class="secondary-button" data-close="bookingDialog">Cancelar</button>
@@ -251,7 +263,6 @@
         <button class="active" data-tab="appointments" type="button">Agenda</button>
         <button data-tab="services" type="button">Serviços</button>
         <button data-tab="professionals" type="button">Profissionais</button>
-        <button data-tab="clients" type="button">Clientes</button>
         <button data-tab="settings" type="button">Configurações</button>
         <button data-tab="products" type="button">Produtos</button>
     </div>
@@ -365,6 +376,46 @@
         clearButton.textContent = 'Esvaziar carrinho';
         clearButton.addEventListener('click', () => { cart = {}; persistCart(); renderCart(); });
         cartPanel.appendChild(clearButton);
+        const checkoutButton = document.createElement('button');
+        checkoutButton.type = 'button'; checkoutButton.className = 'primary-button essence-checkout';
+        checkoutButton.textContent = 'Finalizar pedido demonstrativo';
+        // Notificações internas, sem alertas nativos do navegador.
+        function showCheckoutNotice(message, kind = 'success') {
+            let notice = document.getElementById('essence-checkout-notice');
+            if (!notice) {
+                notice = document.createElement('div');
+                notice.id = 'essence-checkout-notice';
+                notice.className = 'essence-checkout-notice';
+                notice.setAttribute('role', 'status');
+                notice.setAttribute('aria-live', 'polite');
+                notice.innerHTML = '<span class="essence-checkout-notice-icon" aria-hidden="true"></span><div class="essence-checkout-notice-body"><strong></strong><p></p></div><button type="button" class="essence-checkout-notice-close" aria-label="Fechar aviso">×</button>';
+                document.body.appendChild(notice);
+                notice.querySelector('button').addEventListener('click', () => notice.classList.remove('is-visible'));
+            }
+            const error = kind === 'error';
+            notice.classList.toggle('is-error', error);
+            notice.querySelector('.essence-checkout-notice-icon').textContent = error ? '!' : '✓';
+            notice.querySelector('strong').textContent = error ? 'Não foi possível continuar' : 'Pedido registrado!';
+            notice.querySelector('p').textContent = message;
+            notice.classList.add('is-visible');
+            clearTimeout(notice._hideTimer);
+            notice._hideTimer = setTimeout(() => notice.classList.remove('is-visible'), error ? 6500 : 5500);
+        }
+        checkoutButton.addEventListener('click', () => {
+            const sessionId = sessionStorage.getItem('essence_client_session_v1');
+            let saved; try { saved = JSON.parse(localStorage.getItem('essence_demo_v4') || '{}'); } catch (_) { saved = {}; }
+            const client = (saved.clients || []).find(x => x.id === sessionId);
+            if (!client) { showCheckoutNotice('Entre ou cadastre-se antes de confirmar o pedido.', 'error'); return; }
+            const items = products.filter(p => Number(cart[p.id]) > 0).map(p => ({productId:p.id, name:p.name, quantity:Number(cart[p.id]), unitPrice:Number(p.price)||0}));
+            if (!items.length) return;
+            const totalValue = items.reduce((sum,x)=>sum+x.quantity*x.unitPrice,0);
+            saved.orders = Array.isArray(saved.orders) ? saved.orders : [];
+            saved.orders.push({id:'o'+Date.now(), clientId:client.id, businessId, items, total:totalValue, createdAt:new Date().toISOString(), status:'demonstrativo'});
+            try { localStorage.setItem('essence_demo_v4', JSON.stringify(saved)); }
+            catch (_) { showCheckoutNotice('Não foi possível salvar o pedido neste navegador.', 'error'); return; }
+            cart={};persistCart();renderCart();showCheckoutNotice('Nenhum pagamento foi realizado. Consulte os detalhes em Minha conta.');
+        });
+        cartPanel.appendChild(checkoutButton);
 
         function persistCart() {
             try { localStorage.setItem(cartKey, JSON.stringify(cart)); }
@@ -414,7 +465,7 @@
                 cartContents.appendChild(empty);
             }
             total.textContent = 'Total estimado: ' + money.format(sum);
-            clearButton.disabled = !count;
+            clearButton.disabled = !count; checkoutButton.disabled = !count;
         }
         if (!products.length) {
             const empty = document.createElement('p');
@@ -462,4 +513,3 @@
 </script>
 </body>
 </html>
-
