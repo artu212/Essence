@@ -133,11 +133,36 @@
                 Sex</label><label><input type="checkbox" name="day" value="6" checked> Sáb</label><label><input
                     type="checkbox" name="day" value="0"> Dom</label></fieldset>
             <label class="full-span">Profissionais (um nome por linha)<textarea name="professionals" rows="3" required
-                                                                                placeholder="Phellipe&#10;Vitória"></textarea></label><label
-                    class="full-span">Serviços (um por linha: nome; preço; duração em minutos)<textarea name="services"
-                                                                                                        rows="4"
-                                                                                                        required
-                                                                                                        placeholder="Corte masculino; 45; 30&#10;Barba; 30; 30"></textarea></label>
+                                                                                placeholder="Phellipe&#10;Vitória"></textarea></label><div class="full-span essence-service-builder">
+                <h3>Serviços oferecidos</h3>
+                <p class="muted">Cadastre cada serviço com nome, preço e duração.</p>
+                <div id="partnerServices"></div>
+                <button type="button" id="addPartnerService" class="secondary-button">+ Adicionar serviço</button>
+            </div>
+        </div>
+        <div class="essence-extra-fields">
+            <fieldset class="essence-shop-option">
+                <legend>Catálogo de produtos (opcional)</legend>
+                <label class="essence-checkbox-line">
+                    <input type="checkbox" name="catalogEnabled" value="yes">
+                    <span>Meu estabelecimento vende produtos e quero exibir o catálogo</span>
+                </label>
+                <p class="muted">Você pode ativar ou desativar a loja depois, no painel administrativo.</p>
+            </fieldset>
+            <div class="essence-social-fields">
+                <h3>Contato e redes sociais (opcionais)</h3>
+                <div class="essence-social-grid">
+                    <label>Instagram (link completo)
+                        <input name="instagram" type="url" placeholder="https://www.instagram.com/seuperfil/">
+                    </label>
+                    <label>WhatsApp (DDD + número)
+                        <input name="whatsapp" type="tel" inputmode="tel" placeholder="31999999999">
+                    </label>
+                    <label class="essence-social-wide">Google Maps (link completo)
+                        <input name="maps" type="url" placeholder="https://maps.google.com/…">
+                    </label>
+                </div>
+            </div>
         </div>
         <p id="partnerError" class="error" role="alert"></p>
         <div class="dialog-actions">
@@ -228,6 +253,7 @@
         <button data-tab="professionals" type="button">Profissionais</button>
         <button data-tab="clients" type="button">Clientes</button>
         <button data-tab="settings" type="button">Configurações</button>
+        <button data-tab="products" type="button">Produtos</button>
     </div>
     <div id="adminContent"></div>
     <div class="admin-footer">
@@ -260,7 +286,180 @@
     </div>
 </dialog>
 <div id="toast" class="toast" role="status" aria-live="polite"></div>
-<script src="js/scripts.js"></script>
+<script>
+    /* A mesma página index.html apresenta o Essence ou o catálogo, conforme a URL.
+       O catálogo é exibido na mesma aba, sem precisar de catalogo.html. */
+    (function () {
+        'use strict';
+        const businessId = new URLSearchParams(window.location.search).get('catalogo');
+        if (businessId === null) {
+            const script = document.createElement('script');
+            script.src = 'js/scripts.js';
+            document.body.appendChild(script);
+            return;
+        }
+
+        document.body.replaceChildren();
+        document.body.className = 'essence-catalog-view';
+        const main = document.createElement('main');
+        main.className = 'essence-catalog-page';
+        document.body.appendChild(main);
+
+        const back = document.createElement('a');
+        back.href = 'index.html';
+        back.className = 'essence-catalog-back';
+        back.textContent = '← Voltar ao Essence';
+        main.appendChild(back);
+
+        const heading = document.createElement('h1');
+        heading.textContent = 'Catálogo de produtos';
+        main.appendChild(heading);
+        const subtitle = document.createElement('p');
+        subtitle.className = 'muted';
+        subtitle.textContent = 'Catálogo demonstrativo. Consulte o estabelecimento para combinar a compra.';
+        main.appendChild(subtitle);
+        const grid = document.createElement('div');
+        grid.className = 'essence-product-grid';
+        main.appendChild(grid);
+
+        let business;
+        try {
+            const saved = JSON.parse(localStorage.getItem('essence_demo_v4') || '{}');
+            business = (Array.isArray(saved.businesses) ? saved.businesses : [])
+                .find(item => item.id === businessId && item.catalogEnabled);
+        } catch (_) { /* Dados indisponíveis ou inválidos. */ }
+        if (!business) {
+            subtitle.textContent = 'Catálogo indisponível neste navegador. Os dados desta demonstração não são compartilhados entre dispositivos.';
+            return;
+        }
+        heading.textContent = 'Produtos • ' + business.name;
+        document.title = 'Produtos • ' + business.name + ' | Essence';
+        const products = Array.isArray(business.products) ? business.products : [];
+        const money = new Intl.NumberFormat('pt-BR', {style: 'currency', currency: 'BRL'});
+        const cartKey = 'essence_cart_v1_' + businessId;
+        let cart = {};
+        try { cart = JSON.parse(localStorage.getItem(cartKey) || '{}') || {}; } catch (_) { cart = {}; }
+        const layout = document.createElement('div');
+        layout.className = 'essence-store-layout';
+        grid.replaceWith(layout);
+        layout.appendChild(grid);
+        const cartPanel = document.createElement('aside');
+        cartPanel.className = 'essence-cart-panel';
+        cartPanel.setAttribute('aria-label', 'Carrinho de produtos');
+        layout.appendChild(cartPanel);
+        const headingCart = document.createElement('h2');
+        headingCart.textContent = 'Meu carrinho';
+        cartPanel.appendChild(headingCart);
+        const cartContents = document.createElement('div');
+        cartPanel.appendChild(cartContents);
+        const total = document.createElement('strong');
+        total.className = 'essence-cart-total';
+        cartPanel.appendChild(total);
+        const cartInfo = document.createElement('p');
+        cartInfo.className = 'muted essence-cart-info';
+        cartInfo.textContent = 'Carrinho demonstrativo. Não realiza compras, pagamentos ou reservas de estoque.';
+        cartPanel.appendChild(cartInfo);
+        const clearButton = document.createElement('button');
+        clearButton.type = 'button';
+        clearButton.className = 'secondary-button essence-cart-clear';
+        clearButton.textContent = 'Esvaziar carrinho';
+        clearButton.addEventListener('click', () => { cart = {}; persistCart(); renderCart(); });
+        cartPanel.appendChild(clearButton);
+
+        function persistCart() {
+            try { localStorage.setItem(cartKey, JSON.stringify(cart)); }
+            catch (_) { cartInfo.textContent = 'Não foi possível salvar o carrinho neste navegador.'; }
+        }
+        function renderCart() {
+            cartContents.replaceChildren();
+            let sum = 0;
+            let count = 0;
+            for (const product of products) {
+                const qty = Math.max(0, Math.floor(Number(cart[product.id]) || 0));
+                if (!qty) continue;
+                count += qty;
+                sum += qty * Number(product.price || 0);
+                const line = document.createElement('div');
+                line.className = 'essence-cart-line';
+                const info = document.createElement('span');
+                info.textContent = product.name + ' · ' + money.format(Number(product.price) || 0);
+                line.appendChild(info);
+                const controls = document.createElement('div');
+                controls.className = 'essence-qty-controls';
+                for (const [label, change] of [['−', -1], ['+', 1]]) {
+                    const button = document.createElement('button');
+                    button.type = 'button';
+                    button.textContent = label;
+                    button.setAttribute('aria-label', (change < 0 ? 'Diminuir ' : 'Aumentar ') + product.name);
+                    button.addEventListener('click', () => {
+                        const next = Math.max(0, (Number(cart[product.id]) || 0) + change);
+                        if (next) cart[product.id] = next;
+                        else delete cart[product.id];
+                        persistCart(); renderCart();
+                    });
+                    controls.appendChild(button);
+                    if (change < 0) {
+                        const amount = document.createElement('span');
+                        amount.textContent = String(qty);
+                        controls.appendChild(amount);
+                    }
+                }
+                line.appendChild(controls);
+                cartContents.appendChild(line);
+            }
+            if (!count) {
+                const empty = document.createElement('p');
+                empty.className = 'muted';
+                empty.textContent = 'Seu carrinho está vazio.';
+                cartContents.appendChild(empty);
+            }
+            total.textContent = 'Total estimado: ' + money.format(sum);
+            clearButton.disabled = !count;
+        }
+        if (!products.length) {
+            const empty = document.createElement('p');
+            empty.className = 'muted';
+            empty.textContent = 'Nenhum produto cadastrado ainda.';
+            grid.appendChild(empty);
+        }
+        for (const product of products) {
+            const card = document.createElement('article');
+            card.className = 'essence-product-card';
+            if (product.image && (/^data:image\/(?:jpeg|png|webp);base64,/i.test(product.image) || /^https:\/\//i.test(product.image))) {
+                const img = document.createElement('img');
+                img.src = product.image;
+                img.alt = 'Imagem de ' + String(product.name || 'produto');
+                img.loading = 'lazy';
+                card.appendChild(img);
+            } else {
+                const placeholder = document.createElement('div');
+                placeholder.className = 'essence-product-placeholder';
+                placeholder.textContent = '🛍️';
+                card.appendChild(placeholder);
+            }
+            const title = document.createElement('h3');
+            title.textContent = product.name || 'Produto';
+            card.appendChild(title);
+            const description = document.createElement('p');
+            description.textContent = product.description || '';
+            card.appendChild(description);
+            const price = document.createElement('strong');
+            price.textContent = money.format(Number(product.price) || 0);
+            card.appendChild(price);
+            const add = document.createElement('button');
+            add.type = 'button';
+            add.className = 'essence-add-cart';
+            add.textContent = 'Adicionar ao carrinho';
+            add.addEventListener('click', () => {
+                cart[product.id] = Math.min(99, (Number(cart[product.id]) || 0) + 1);
+                persistCart(); renderCart();
+            });
+            card.appendChild(add);
+            grid.appendChild(card);
+        }
+        renderCart();
+    }());
+</script>
 </body>
 </html>
 

@@ -57,6 +57,24 @@ function escapeHtml(s) {
     }[ch]))
 }
 
+/* Máscara monetária: cada dígito representa centavos (100 -> R$ 1,00). */
+function formatPriceInput(input, initial = null) {
+    input.type = 'text';
+    input.inputMode = 'numeric';
+    input.autocomplete = 'off';
+    input.dataset.currency = 'true';
+    const display = cents => money(cents / 100);
+    if (initial !== null) input.value = display(Math.round(Number(initial || 0) * 100));
+    input.addEventListener('input', () => {
+        const digits = input.value.replace(/\D/g, '').slice(0, 12);
+        input.value = display(Number(digits || 0));
+    });
+}
+function parsePriceInput(value) {
+    const digits = String(value || '').replace(/\D/g, '');
+    return Number(digits || 0) / 100;
+}
+
 function money(v) {
     return new Intl.NumberFormat('pt-BR', {style: 'currency', currency: 'BRL'}).format(v)
 }
@@ -107,11 +125,39 @@ function renderFilters() {
     $('filters').innerHTML = cats.map(c => `<button class="filter ${category === c ? 'active' : ''}" data-category="${escapeHtml(c)}">${escapeHtml(c)}</button>`).join('')
 }
 
+/* Catálogo opcional e links externos: versão acadêmica, dados locais. */
+function safeExternalUrl(raw) {
+    const value = String(raw || '').trim();
+    if (!value) return '';
+    try {
+        const url = new URL(value);
+        return ['https:', 'http:'].includes(url.protocol) ? url.href : '';
+    } catch { return ''; }
+}
+function contactLinks(b) {
+    const links = [];
+    const instagram = safeExternalUrl(b.instagram);
+    const maps = safeExternalUrl(b.maps);
+    const phone = String(b.whatsapp || '').replace(/\D/g, '');
+    if (instagram) links.push(`<a href="${escapeHtml(instagram)}" target="_blank" rel="noopener noreferrer">Instagram</a>`);
+    if (phone.length >= 10 && phone.length <= 13) links.push(`<a href="https://wa.me/55${escapeHtml(phone.replace(/^55(?=\d{10,11}$)/, ''))}" target="_blank" rel="noopener noreferrer">WhatsApp</a>`);
+    if (maps) links.push(`<a href="${escapeHtml(maps)}" target="_blank" rel="noopener noreferrer">Como chegar</a>`);
+    return links.length ? `<div class="essence-contact-links">${links.join('')}</div>` : '';
+}
+function renderCatalog(businessId) {
+    const b = findBusiness(businessId);
+    if (!b || !b.catalogEnabled) return;
+    window.location.assign(`index.html?catalogo=${encodeURIComponent(businessId)}`);
+}
+function catalogButton(b) {
+    return b.catalogEnabled ? `<button type="button" class="essence-catalog-button" data-catalog="${escapeHtml(b.id)}">Ver produtos</button>` : '';
+}
+
 function renderBusinesses() {
     const q = $('search').value.trim().toLocaleLowerCase('pt-BR');
     const list = data.businesses.filter(b => (category === 'Todos' || b.category === category) && [b.name, b.category, b.description, b.location, ...b.services.map(s => s.name)].join(' ').toLocaleLowerCase('pt-BR').includes(q));
     $('resultCount').textContent = `${list.length} estabelecimento${list.length === 1 ? '' : 's'}`;
-    $('businessGrid').innerHTML = list.length ? list.map(b => `<article class="business-card"><div class="card-cover" style="--cover1:${b.colors[0]};--cover2:${b.colors[1]}"><span class="category-tag">${escapeHtml(b.category)}</span>${b.image ? `<img class="business-logo" src="${escapeHtml(b.image)}" alt="Logo de ${escapeHtml(b.name)}" loading="lazy">` : b.id === 'b1' ? '<img class="business-logo" src="assets/027-barbearia.png" alt="Logo 027 Barbearia" loading="lazy">' : `<span class="cover-icon">${escapeHtml(b.icon)}</span>`}</div><div class="card-content"><h3>${escapeHtml(b.name)}</h3><p>${escapeHtml(b.description)}</p><div class="card-meta">⌖ ${escapeHtml(b.location)} · ${b.professionals.length} profissional(is)</div><div class="card-footer"><span>A partir de ${money(Math.min(...b.services.map(s => s.price)))}</span><button type="button" data-book="${b.id}">Agendar →</button></div></div></article>`).join('') : '<p class="empty">Nenhum estabelecimento encontrado. Experimente outra busca.</p>'
+    $('businessGrid').innerHTML = list.length ? list.map(b => `<article class="business-card"><div class="card-cover" style="--cover1:${b.colors[0]};--cover2:${b.colors[1]}"><span class="category-tag">${escapeHtml(b.category)}</span>${b.image ? `<img class="business-logo" src="${escapeHtml(b.image)}" alt="Logo de ${escapeHtml(b.name)}" loading="lazy">` : b.id === 'b1' ? '<img class="business-logo" src="assets/027-barbearia.png" alt="Logo 027 Barbearia" loading="lazy">' : `<span class="cover-icon">${escapeHtml(b.icon)}</span>`}</div><div class="card-content"><h3>${escapeHtml(b.name)}</h3><p>${escapeHtml(b.description)}</p><div class="card-meta">⌖ ${escapeHtml(b.location)} · ${b.professionals.length} profissional(is)</div><div class="card-footer"><span>A partir de ${money(Math.min(...b.services.map(s => s.price)))}</span><div class="essence-card-buttons"><button type="button" data-book="${b.id}">Agendar →</button>${catalogButton(b)}</div></div>${contactLinks(b)}</div></article>`).join('') : '<p class="empty">Nenhum estabelecimento encontrado. Experimente outra busca.</p>'
 }
 
 function selectOptions(items, label) {
@@ -298,7 +344,7 @@ function renderSlots() {
         return
     }
     const opening = minutes(hours.open), closing = minutes(hours.close);
-    for (let start = opening; start + service.duration <= closing; start += 30) {
+    for (let start = opening; start + service.duration <= closing; start += 15) {
         const time = `${String(Math.floor(start / 60)).padStart(2, '0')}:${String(start % 60).padStart(2, '0')}`;
         const disabled = dateTime(date, time) <= new Date() || blockedFor(b, professionalId, date, start, service.duration) || conflicts(b.id, professionalId, date, start, service.duration, editingId);
         const button = document.createElement('button');
@@ -405,6 +451,12 @@ function renderAdmin() {
                 </div>
             </section>
             <section class="settings-section">
+                <h3>Loja e produtos</h3>
+                <p class="muted">${b.catalogEnabled ? 'O botão Ver produtos está visível para os clientes.' : 'O catálogo está oculto para os clientes.'} Os produtos cadastrados são mantidos ao desativar a loja.</p>
+                <button type="button" class="settings-button primary" data-toggle-catalog="1">${b.catalogEnabled ? 'Desativar catálogo' : 'Ativar catálogo'}</button>
+                <p class="muted">Cadastre e edite produtos na aba Produtos.</p>
+            </section>
+            <section class="settings-section">
                 <h3>Folgas, feriados e férias</h3>
                 <p class="muted">Bloqueie um dia, vários dias ou apenas parte do expediente. Escolha um profissional ou toda a equipe.</p>
                 <div class="date-block-form">
@@ -437,6 +489,11 @@ function renderAdmin() {
                 ${notices.length ? notices.map(notice => `<div class="essence-notice ${notice.color === 'red' ? 'red' : 'green'}"><strong>${escapeHtml(notice.title)}</strong><p>${escapeHtml(notice.message)}${notice.until ? `\nVálido até ${localDate(notice.until)}` : ''}</p><div class="notice-actions"><button type="button" data-remove-notice="${escapeHtml(notice.id)}">Excluir aviso</button></div></div>`).join('') : '<p class="muted">Nenhum aviso publicado.</p>'}
             </section>
         </div>`;
+    } else if (adminTab === 'products') {
+        const products = Array.isArray(b.products) ? b.products : [];
+        html = `<p class="muted">${b.catalogEnabled ? 'Catálogo visível para clientes.' : 'Catálogo oculto. Ative-o na aba Configurações.'}</p>` +
+            products.map(p => `<div class="admin-item"><div><strong>${escapeHtml(p.name)}</strong><small>${money(p.price)} · ${escapeHtml(p.description || '')}</small></div><div class="admin-actions"><button data-edit-product="${escapeHtml(p.id)}">Editar</button><button class="danger-outline" data-delete-product="${escapeHtml(p.id)}">Excluir</button></div></div>`).join('') +
+            '<button class="secondary-button" data-add-product="1">+ Adicionar produto</button>';
     } else if (adminTab === 'professionals') {
         html = b.professionals.map(p => `<div class="admin-item"><strong>${escapeHtml(p.name)}</strong><button data-edit-professional="${p.id}">Editar</button></div>`).join('') + '<button class="secondary-button" data-add-professional="1">+ Adicionar profissional</button>'
     } else {
@@ -462,16 +519,34 @@ function openEditor({title, fields, onSave}) {
         label.textContent = field.label;
         const input = document.createElement('input');
         input.name = field.name;
-        input.type = field.type || 'text';
+        input.type = field.type === 'currency' ? 'text' : (field.type || 'text');
         input.required = field.required !== false;
         if (field.type === 'file') {
             input.accept = 'image/png,image/jpeg,image/webp';
         }
         if (field.type !== 'file') input.value = String(field.value ?? '');
+        if (field.type === 'currency') formatPriceInput(input, field.value);
         if (field.type === 'number') {
             input.min = String(field.min ?? 0);
             input.step = String(field.step ?? 1);
             if (field.max != null) input.max = String(field.max);
+        }
+        if (field.type === 'file' && field.preview) {
+            const preview = document.createElement('img');
+            preview.className = 'essence-image-preview';
+            preview.alt = 'Imagem atual cadastrada';
+            preview.src = field.preview;
+            label.appendChild(preview);
+            const caption = document.createElement('small');
+            caption.textContent = 'Imagem atual. Escolha outro arquivo somente se quiser substituir.';
+            label.appendChild(caption);
+            input.addEventListener('change', () => {
+                const file = input.files?.[0];
+                if (!file) { preview.src = field.preview; return; }
+                const reader = new FileReader();
+                reader.onload = () => { preview.src = reader.result; };
+                reader.readAsDataURL(file);
+            });
         }
         label.appendChild(input);
         $('editorFields').appendChild(label);
@@ -480,6 +555,7 @@ function openEditor({title, fields, onSave}) {
     form.onsubmit = async event => {
         event.preventDefault();
         const values = Object.fromEntries(new FormData(form));
+        form.querySelectorAll('[data-currency]').forEach(input => { values[input.name] = parsePriceInput(input.value); });
         const error = await onSave(values);
         if (error) {
             $('editorError').textContent = error;
@@ -499,16 +575,16 @@ function editService(id) {
         title: s ? 'Editar serviço' : 'Adicionar serviço',
         fields: [
             {name: 'name', label: 'Nome do serviço', value: s?.name || ''},
-            {name: 'price', label: 'Preço (R$)', type: 'number', min: 0, step: 0.01, value: s?.price ?? 50},
-            {name: 'duration', label: 'Duração (minutos)', type: 'number', min: 30, max: 240, step: 30, value: s?.duration ?? 30}
+            {name: 'price', label: 'Preço (R$)', type: 'currency', value: s?.price ?? 50},
+            {name: 'duration', label: 'Duração (minutos)', type: 'number', min: 15, max: 240, step: 15, value: s?.duration ?? 30}
         ],
         onSave(values) {
             const name = values.name.trim();
             const price = Number(values.price);
             const duration = Number(values.duration);
             if (!name) return 'Informe o nome do serviço.';
-            if (!Number.isFinite(price) || price < 0 || !Number.isInteger(duration) || duration < 30 || duration > 240 || duration % 30 !== 0) {
-                return 'Informe um preço válido e duração entre 30 e 240 minutos, em múltiplos de 30.';
+            if (!Number.isFinite(price) || price < 0 || !Number.isInteger(duration) || duration < 15 || duration > 240 || duration % 15 !== 0) {
+                return 'Informe um preço válido e duração entre 15 e 240 minutos, em múltiplos de 15.';
             }
             if (s) Object.assign(s, {name, price, duration});
             else b.services.push({id: `s${Date.now()}`, name, price, duration});
@@ -549,11 +625,27 @@ function editBusiness() {
             {name: 'name', label: 'Nome do estabelecimento', value: b.name},
             {name: 'description', label: 'Descrição', value: b.description},
             {name: 'location', label: 'Localização', value: b.location},
-            {name: 'image', label: 'Nova imagem (opcional, até 250 KB)', type: 'file', required: false}
+            {name: 'category', label: 'Categoria', value: b.category},
+            {name: 'open', label: 'Abertura (HH:MM)', value: b.hours?.open || '09:00'},
+            {name: 'close', label: 'Fechamento (HH:MM)', value: b.hours?.close || '18:00'},
+            {name: 'days', label: 'Dias da semana (0=Dom, 1=Seg ... 6=Sáb; separados por vírgula)', value: (b.hours?.days || [0,1,2,3,4,5,6]).join(',')},
+            {name: 'instagram', label: 'Instagram (URL opcional)', value: b.instagram || '', required: false},
+            {name: 'whatsapp', label: 'WhatsApp com DDD (opcional)', value: b.whatsapp || '', required: false},
+            {name: 'maps', label: 'Google Maps (URL opcional)', value: b.maps || '', required: false},
+            {name: 'image', label: 'Nova imagem (opcional, até 250 KB)', type: 'file', required: false, preview: b.image || (b.id === 'b1' ? 'assets/027-barbearia.png' : '')}
         ],
         async onSave(values) {
             const name = values.name.trim(), description = values.description.trim(), location = values.location.trim();
-            if (!name || !description || !location) return 'Preencha nome, descrição e localização.';
+            if (!name || !description || !location || !values.category.trim()) return 'Preencha nome, descrição, categoria e localização.';
+            const open = values.open.trim(), close = values.close.trim();
+            const days = [...new Set(values.days.split(',').map(x => Number(x.trim())))];
+            if (!/^([01]\d|2[0-3]):[0-5]\d$/.test(open) || !/^([01]\d|2[0-3]):[0-5]\d$/.test(close) || minutes(close) <= minutes(open)) return 'Informe horários válidos.';
+            if (!days.length || days.some(d => !Number.isInteger(d) || d < 0 || d > 6)) return 'Informe dias entre 0 e 6 separados por vírgula.';
+            if ((values.instagram && !safeExternalUrl(values.instagram)) || (values.maps && !safeExternalUrl(values.maps))) return 'Use links completos com https://';
+            const whatsapp = values.whatsapp.replace(/\D/g, '');
+            if (whatsapp && (whatsapp.length < 10 || whatsapp.length > 13)) return 'Informe WhatsApp com DDD.';
+            const conflictsHours = data.bookings.some(x => x.businessId === b.id && x.status === 'active' && (!days.includes(new Date(x.date + 'T12:00:00').getDay()) || minutes(x.time) < minutes(open) || minutes(x.time) + x.duration > minutes(close)));
+            if (conflictsHours) return 'Há agendamentos ativos fora dos novos dias/horários. Reagende ou cancele antes de alterar.';
             let image = b.image;
             if (values.image?.size) {
                 if (values.image.size > 250000) return 'A imagem deve ter até 250 KB.';
@@ -567,11 +659,72 @@ function editBusiness() {
                     });
                 } catch { return 'Não foi possível ler a imagem.'; }
             }
-            Object.assign(b, {name, description, location, image});
+            Object.assign(b, {name, description, location, image, category: values.category.trim(), hours: {open, close, days}, instagram: values.instagram.trim(), whatsapp, maps: values.maps.trim()});
             save(); renderFilters(); renderBusinesses();
             $('adminBusiness').querySelector(`option[value="${b.id}"]`).textContent = b.name;
             renderAdmin();
             notify('Estabelecimento atualizado.');
+        }
+    });
+}
+
+/* Converte imagens anexadas para JPEG compacto, pois a demonstração usa localStorage. */
+async function productImageFromFile(file) {
+    if (!file || !file.size) return null;
+    if (!['image/png', 'image/jpeg', 'image/webp'].includes(file.type)) throw new Error('Use uma imagem PNG, JPG ou WebP.');
+    if (file.size > 8 * 1024 * 1024) throw new Error('Escolha uma imagem de até 8 MB.');
+    const url = URL.createObjectURL(file);
+    try {
+        const img = new Image();
+        img.src = url;
+        await img.decode();
+        const scale = Math.min(1, 720 / Math.max(img.naturalWidth, img.naturalHeight));
+        const canvas = document.createElement('canvas');
+        canvas.width = Math.max(1, Math.round(img.naturalWidth * scale));
+        canvas.height = Math.max(1, Math.round(img.naturalHeight * scale));
+        const ctx = canvas.getContext('2d');
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        return canvas.toDataURL('image/jpeg', 0.72);
+    } finally { URL.revokeObjectURL(url); }
+}
+
+function editProduct(id) {
+    const b = findBusiness($('adminBusiness').value);
+    if (!b) return;
+    b.products ||= [];
+    const product = b.products.find(p => p.id === id);
+    openEditor({
+        title: product ? 'Editar produto' : 'Adicionar produto',
+        fields: [
+            {name: 'name', label: 'Nome do produto', value: product?.name || ''},
+            {name: 'description', label: 'Descrição (opcional)', value: product?.description || '', required: false},
+            {name: 'price', label: 'Preço (R$)', type: 'currency', value: product?.price ?? 0},
+            {name: 'image', label: 'Anexar imagem (opcional — PNG, JPG ou WebP)', type: 'file', required: false, preview: product?.image || ''},
+            ...(product?.image ? [{name: 'removeImage', label: 'Remover imagem atual? (digite SIM, se desejar)', required: false}] : [])
+        ],
+        async onSave(values) {
+            const name = String(values.name || '').trim();
+            const description = String(values.description || '').trim();
+            const price = Number(values.price);
+            if (!name || !Number.isFinite(price) || price < 0) return 'Informe nome e preço válido.';
+            let image = product?.image || '';
+            if (String(values.removeImage || '').trim().toUpperCase() === 'SIM') image = '';
+            try {
+                const uploaded = await productImageFromFile(values.image);
+                if (uploaded) image = uploaded;
+            } catch (error) { return error.message; }
+            const oldProducts = JSON.stringify(b.products);
+            if (product) Object.assign(product, {name, description, price, image});
+            else b.products.push({id: 'prod' + Date.now(), name, description, price, image});
+            try {
+                localStorage.setItem(STORE, JSON.stringify(data));
+            } catch {
+                b.products = JSON.parse(oldProducts);
+                return 'Sem espaço no navegador para salvar. Tente uma imagem menor ou sem foto.';
+            }
+            renderAdmin(); notify('Produto salvo.');
         }
     });
 }
@@ -682,8 +835,10 @@ $('filters').addEventListener('click', e => {
     renderBusinesses()
 });
 $('businessGrid').addEventListener('click', e => {
-    const btn = e.target.closest('[data-book]');
-    if (btn) openBooking(btn.dataset.book)
+    const book = e.target.closest('[data-book]');
+    const catalog = e.target.closest('[data-catalog]');
+    if (book) openBooking(book.dataset.book);
+    else if (catalog) renderCatalog(catalog.dataset.catalog);
 });
 $('search').addEventListener('input', renderBusinesses);
 $('clearSearch').addEventListener('click', () => {
@@ -752,6 +907,20 @@ $('adminContent').addEventListener('click', e => {
             true
         );
     } else if (btn.dataset.deleteService) deleteService(btn.dataset.deleteService);
+    else if (btn.dataset.addProduct) editProduct(null);
+    else if (btn.dataset.editProduct) editProduct(btn.dataset.editProduct);
+    else if (btn.dataset.deleteProduct) {
+        const b = findBusiness($('adminBusiness').value);
+        askConfirmation('Excluir produto', 'Deseja excluir este produto do catálogo?', () => {
+            b.products = (b.products || []).filter(p => p.id !== btn.dataset.deleteProduct);
+            save(); renderAdmin(); notify('Produto excluído.');
+        }, true);
+    }
+    else if (btn.dataset.toggleCatalog) {
+        const b = findBusiness($('adminBusiness').value);
+        b.catalogEnabled = !b.catalogEnabled;
+        save(); renderAdmin(); renderBusinesses(); notify(b.catalogEnabled ? 'Catálogo ativado.' : 'Catálogo desativado.');
+    }
     else if (btn.dataset.editBusiness) editBusiness();
     else if (btn.dataset.deleteBusiness) deleteBusiness();
     else if (btn.dataset.addBlock) addBlockedDates();
@@ -810,6 +979,27 @@ $('partnerInterest').addEventListener('click', () => {
     $('partnerError').textContent = '';
     $('partnerDialog').showModal()
 });
+/* Cadastro guiado de serviços, sem sintaxe de ponto e vírgula. */
+function addPartnerServiceRow(name = '', price = 0, duration = 30) {
+    const container = $('partnerServices');
+    const row = document.createElement('div');
+    row.className = 'essence-service-row';
+    row.innerHTML = `<label>Nome do serviço<input class="partner-service-name" required maxlength="80" placeholder="Ex.: Corte masculino"></label>
+        <label>Preço (R$)<input class="partner-service-price" required></label>
+        <label>Duração (minutos)<input class="partner-service-duration" type="number" min="15" max="240" step="15" required></label>
+        <button type="button" class="essence-remove-service" aria-label="Remover serviço">Remover</button>`;
+    row.querySelector('.partner-service-name').value = name;
+    row.querySelector('.partner-service-duration').value = duration;
+    formatPriceInput(row.querySelector('.partner-service-price'), price);
+    row.querySelector('.essence-remove-service').addEventListener('click', () => {
+        if (container.children.length > 1) row.remove();
+        else notify('Cadastre pelo menos um serviço.');
+    });
+    container.appendChild(row);
+}
+$('addPartnerService').addEventListener('click', () => addPartnerServiceRow());
+addPartnerServiceRow();
+
 $('partnerForm').addEventListener('submit', async e => {
     e.preventDefault();
     const form = e.currentTarget, fd = new FormData(form), error = $('partnerError');
@@ -818,16 +1008,16 @@ $('partnerForm').addEventListener('submit', async e => {
         location = String(fd.get('location') || '').trim();
     const open = String(fd.get('open')), close = String(fd.get('close')), days = fd.getAll('day').map(Number);
     const pros = String(fd.get('professionals') || '').split('\n').map(x => x.trim()).filter(Boolean);
-    const rows = String(fd.get('services') || '').split('\n').map(x => x.trim()).filter(Boolean);
     const services = [];
-    for (const line of rows) {
-        const parts = line.split(';').map(x => x.trim());
-        const price = Number((parts[1] || '').replace(',', '.')), duration = Number(parts[2]);
-        if (parts.length !== 3 || !parts[0] || !Number.isFinite(price) || price < 0 || !Number.isInteger(duration) || duration < 30 || duration > 240 || duration % 30 !== 0) {
-            error.textContent = 'Serviços: use uma linha por serviço, no formato Nome; preço; duração (múltiplo de 30).';
-            return
+    for (const row of $('partnerServices').querySelectorAll('.essence-service-row')) {
+        const serviceName = row.querySelector('.partner-service-name').value.trim();
+        const price = parsePriceInput(row.querySelector('.partner-service-price').value);
+        const duration = Number(row.querySelector('.partner-service-duration').value);
+        if (!serviceName || !Number.isFinite(price) || price < 0 || !Number.isInteger(duration) || duration < 15 || duration > 240 || duration % 15 !== 0) {
+            error.textContent = 'Confira o nome, preço e duração de cada serviço (15 a 240 minutos, em múltiplos de 15).';
+            return;
         }
-        services.push({id: 's' + Date.now() + services.length, name: parts[0], price, duration})
+        services.push({id: 's' + Date.now() + services.length, name: serviceName, price, duration});
     }
     if (!name || !description || !location || !pros.length || !services.length || !days.length || minutes(close) <= minutes(open)) {
         error.textContent = 'Preencha todos os campos e selecione ao menos um dia. O fechamento deve ser após a abertura.';
@@ -847,8 +1037,17 @@ $('partnerForm').addEventListener('submit', async e => {
             reader.readAsDataURL(file)
         })
     }
+    const instagram = String(fd.get('instagram') || '').trim();
+    const maps = String(fd.get('maps') || '').trim();
+    const whatsapp = String(fd.get('whatsapp') || '').replace(/\D/g, '');
+    if ((instagram && !safeExternalUrl(instagram)) || (maps && !safeExternalUrl(maps)) || (whatsapp && (whatsapp.length < 10 || whatsapp.length > 13))) {
+        error.textContent = 'Confira os links de Instagram, Maps e o WhatsApp com DDD.';
+        return;
+    }
     const id = 'b' + Date.now();
     data.businesses.push({
+        catalogEnabled: fd.get('catalogEnabled') === 'yes',
+        products: [], instagram, whatsapp, maps,
         id,
         name,
         category: String(fd.get('category')),
@@ -867,6 +1066,8 @@ $('partnerForm').addEventListener('submit', async e => {
     renderFilters();
     renderBusinesses();
     form.reset();
+    $('partnerServices').replaceChildren();
+    addPartnerServiceRow();
     $('partnerDialog').close();
     notify('Estabelecimento criado nesta demonstração!');
     $('explorar').scrollIntoView({behavior: 'smooth'});
@@ -918,6 +1119,7 @@ function saveInterfaceState() {
             adminTab,
             adminFields: snapshotFields($('adminContent')),
             partnerFields: snapshotFields($('partnerForm')),
+            partnerServices: [...$('partnerServices').querySelectorAll('.essence-service-row')].map(row => ({name: row.querySelector('.partner-service-name').value, price: parsePriceInput(row.querySelector('.partner-service-price').value), duration: row.querySelector('.partner-service-duration').value})),
             booking: {
                 businessId: selectedBusiness,
                 editingId,
@@ -955,7 +1157,7 @@ function restoreInterfaceState() {
     if (opened.includes('adminDialog') || opened.includes('editorDialog') || opened.includes('confirmDialog')) {
         openAdmin();
         if (findBusiness(state.adminBusiness)) $('adminBusiness').value = state.adminBusiness;
-        const validTabs = ['appointments', 'services', 'professionals', 'clients', 'settings'];
+        const validTabs = ['appointments', 'services', 'professionals', 'clients', 'settings', 'products'];
         adminTab = validTabs.includes(state.adminTab) ? state.adminTab : 'appointments';
         renderAdmin();
         restoreFields($('adminContent'), state.adminFields);
@@ -964,6 +1166,10 @@ function restoreInterfaceState() {
     if (opened.includes('partnerDialog')) {
         $('partnerDialog').showModal();
         restoreFields($('partnerForm'), state.partnerFields);
+        if (Array.isArray(state.partnerServices) && state.partnerServices.length) {
+            $('partnerServices').replaceChildren();
+            state.partnerServices.forEach(s => addPartnerServiceRow(s.name, s.price, s.duration));
+        }
     }
     if (opened.includes('bookingDialog') && findBusiness(state.booking?.businessId)) {
         const bk = state.booking;
