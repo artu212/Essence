@@ -2782,3 +2782,47 @@ input[type="date"],input[type="datetime-local"],input[type="time"] { width:100%;
         z-index: 3;
     }
 }
+
+/* Hero definitivo: sem anéis decorativos; ícone e legenda em áreas separadas. */
+.hero .hero-booking-art {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 32px;
+    min-height: 390px;
+    padding: 36px 16px;
+    box-sizing: border-box;
+}
+.hero .hero-booking-art .art-circle { display: none !important; }
+.hero .hero-booking-art .calendar-emblem {
+    position: relative;
+    flex: 0 0 auto;
+    width: min(210px, 55vw);
+    height: auto;
+    aspect-ratio: 1;
+    margin: 0;
+}
+.hero .hero-booking-art .booking-art-caption {
+    position: static;
+    inset: auto;
+    grid-row: auto;
+    grid-column: auto;
+    flex: 0 0 auto;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    min-width: 0;
+    text-align: center;
+}
+@media (max-width: 768px) {
+    .hero .hero-booking-art {
+        display: flex;
+        min-height: 360px;
+        gap: 36px;
+        padding: 28px 16px 42px;
+    }
+    .hero .hero-booking-art .calendar-emblem {
+        width: min(175px, 45vw);
+    }
+}
