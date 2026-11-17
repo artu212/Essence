@@ -2701,3 +2701,35 @@ input[type="date"],input[type="datetime-local"],input[type="time"] { width:100%;
 @media (max-width: 350px) {
     .essence-account-dialog .essence-account-tabs { grid-template-columns: minmax(0, 1fr); }
 }
+
+/* Hero mobile: símbolo e legenda com espaço próprio, sem sobreposição. */
+@media (max-width: 768px) {
+    .hero-booking-art {
+        min-height: 390px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 48px;
+        padding: 30px 12px 24px;
+        box-sizing: border-box;
+    }
+    .hero-booking-art .calendar-emblem {
+        flex: 0 0 auto;
+        width: min(150px, 40vw);
+        margin: 0 auto;
+    }
+    .hero-booking-art .art-circle {
+        top: 42%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+    .hero-booking-art .booking-art-caption {
+        position: relative;
+        inset: auto;
+        margin: 0;
+        width: 100%;
+        text-align: center;
+        flex: 0 0 auto;
+    }
+}
