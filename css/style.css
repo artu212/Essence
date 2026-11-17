@@ -2733,3 +2733,52 @@ input[type="date"],input[type="datetime-local"],input[type="time"] { width:100%;
         flex: 0 0 auto;
     }
 }
+
+/* Hero mobile — anéis limitados à área do símbolo, legenda em linha própria. */
+@media (max-width: 768px) {
+    .hero .hero-booking-art {
+        position: relative;
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+        grid-template-rows: 270px auto;
+        align-items: center;
+        justify-items: center;
+        align-content: center;
+        gap: 18px;
+        min-height: 390px;
+        padding: 20px 16px 38px;
+        overflow: hidden;
+        box-sizing: border-box;
+    }
+    .hero .hero-booking-art .calendar-emblem {
+        grid-column: 1;
+        grid-row: 1;
+        width: min(155px, 42vw);
+        height: auto;
+        aspect-ratio: 1;
+        margin: 0;
+        z-index: 2;
+    }
+    .hero .hero-booking-art .art-circle {
+        position: absolute;
+        left: 50%;
+        top: 155px;
+        transform: translate(-50%, -50%);
+        max-width: none;
+        pointer-events: none;
+    }
+    .hero .hero-booking-art .circle-one { width: 250px; height: 250px; }
+    .hero .hero-booking-art .circle-two { width: 185px; height: 185px; }
+    .hero .hero-booking-art .booking-art-caption {
+        grid-column: 1;
+        grid-row: 2;
+        position: relative;
+        inset: auto;
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        min-width: 0;
+        text-align: center;
+        z-index: 3;
+    }
+}
