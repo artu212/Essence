@@ -142,3 +142,30 @@ Como possibilidades futuras, foram discutidas integrações com WhatsApp, notifi
 ## 12. Observação sobre os registros
 
 Este histórico foi consolidado a partir das etapas relatadas durante o desenvolvimento e dos commits identificados na conversa. As fases iniciais foram descritas em ordem lógica, sem atribuir datas ou identificadores de commit não confirmados. Alterações integradas ao código não equivalem, por si só, à aprovação em testes oficiais da equipe.
+
+
+## 13. Contas demonstrativas e área do cliente — 17/11/2026
+
+Foi acrescentado um fluxo de cadastro e entrada demonstrativos com múltiplos perfis no mesmo navegador. O formulário inclui nome, e-mail, telefone, senha fictícia e confirmação. O login aceita qualquer senha não vazia; as senhas não são armazenadas ou verificadas como autenticação real. A área **Minha conta** reúne perfil, agendamentos e pedidos demonstrativos.
+
+A finalização de pedido passou a exibir uma notificação integrada à interface, em substituição ao alerta nativo do navegador. A aba administrativa de clientes foi removida conforme a decisão de interface.
+
+**Publicação confirmada:** commit `10166a3` enviado à branch `master` em 17/11/2026, conforme saída do terminal. A validação funcional completa continua pendente.
+
+## 14. Páginas individuais e avisos — 17/11/2026
+
+Foi preparada uma nova atualização do Essence com páginas dinâmicas por estabelecimento e links compartilháveis. Cada página reúne apresentação, capa, descrição, agendamento, produtos, avisos gerais, indisponibilidades e informações de contato/localização. A implementação reaproveita a identidade visual e os módulos já existentes.
+
+Após revisão visual, foram definidos e ajustados os seguintes comportamentos:
+
+- Links de Instagram e WhatsApp removidos da parte inferior dos cartões de busca; ficam na seção **Contato e localização** da página individual.
+- Avisos gerais visíveis na página individual, mas não dentro do formulário de agendamento.
+- Indisponibilidades, folgas e feriados visíveis na página individual **e** dentro da agenda.
+- Maior espaçamento entre **Bloquear na agenda** e **Ausências cadastradas**.
+- Ajustes de largura dos campos em dispositivos móveis, ainda sujeitos a testes no iPhone e outros navegadores.
+
+**Situação:** alterações preparadas nos arquivos locais. O commit, o push, a confirmação da publicação e os testes completos desta atualização ainda não foram informados como concluídos.
+
+## 15. Cuidados para encerramento
+
+Antes de considerar a atualização finalizada, testar navegação por link direto, agendamento, produtos, avisos, bloqueios de agenda, login demonstrativo, formulários no celular e preservação dos dados locais. A versão continua acadêmica, sem autenticação segura, banco central ou pagamentos reais.

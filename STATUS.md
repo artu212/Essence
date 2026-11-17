@@ -4,11 +4,12 @@
 **Repositório:** https://github.com/artu212/Essence  
 **Demonstração:** https://artu212.github.io/Essence/  
 **Branch:** `master`  
-**Último commit confirmado nesta atualização:** `c7d1d98` — `feat: aprimora catalogo, imagens, precos e cadastro de servicos`
+**Último commit confirmado:** `10166a3` — atualização de contas demonstrativas e experiência do cliente.
+**Nova versão:** páginas individuais de estabelecimentos e ajustes de avisos/contatos; aguardando commit e push.
 
 ## Resumo executivo
 
-O **Essence** está implementado como protótipo web demonstrativo, com recursos de agendamento, gestão de estabelecimentos, serviços e profissionais, além de catálogo opcional de produtos e carrinho. O código da atualização mais recente foi enviado ao GitHub com sucesso; o terminal confirmou sincronização da branch `master` e árvore de trabalho limpa. A etapa atual é **validação pela equipe, correção de eventuais falhas e conclusão dos materiais acadêmicos**.
+O **Essence** está implementado como protótipo web demonstrativo, com recursos de agendamento, gestão de estabelecimentos, serviços e profissionais, além de catálogo opcional de produtos e carrinho. O código da atualização anterior foi enviado ao GitHub com sucesso no commit `10166a3`. A atualização das páginas individuais está preparada localmente, mas ainda não foi enviada. A etapa atual é **validação pela equipe, correção de eventuais falhas e conclusão dos materiais acadêmicos**.
 
 > O envio do código ao GitHub não comprova, por si só, que todos os fluxos passaram por testes independentes ou que a versão mais recente já foi verificada no GitHub Pages.
 
@@ -19,7 +20,7 @@ O **Essence** está implementado como protótipo web demonstrativo, com recursos
 | Definição de tema, proposta e escopo | Concluída | Plataforma de agendamentos para diferentes tipos de estabelecimento. |
 | Nome, slogan e identidade visual | Definidos | Essence — *More than a look*. |
 | Estrutura HTML, CSS e JavaScript | Implementada | Aplicação estática, sem back-end. |
-| Busca e visualização de estabelecimentos | Implementadas | Fluxo demonstrativo para clientes. |
+| Busca e páginas individuais de estabelecimentos | Implementadas localmente | Link compartilhável, capa, contatos, serviços e produtos; validar e publicar. |
 | Cadastro e edição de estabelecimentos | Implementados | Dados persistidos no navegador. |
 | Serviços, profissionais e horários | Implementados | Inclui melhorias nos campos de cadastro e preços. |
 | Agendamentos e gestão de disponibilidade | Implementados | Inclui bloqueios, gerenciamento e avisos. |
@@ -27,7 +28,10 @@ O **Essence** está implementado como protótipo web demonstrativo, com recursos
 | Imagens de produtos e estabelecimentos | Atualizadas | Anexo opcional, prévia na edição e ajustes de exibição. |
 | Interface móvel | Ajustada; validação pendente | Foram trabalhados scroll, zoom e responsividade; testar em dispositivos reais. |
 | Persistência via `localStorage` | Implementada | Dados locais, sem sincronização entre usuários. |
-| Commit e push da última atualização | Concluídos | `c7d1d98` enviado para `origin/master`; árvore de trabalho limpa. |
+| Commit e push da atualização anterior | Concluídos | `10166a3` enviado para `origin/master`. |
+| Commit e push das páginas individuais | **Pendentes** | Conferir arquivos, testar, versionar e enviar. |
+| Contas e login demonstrativos | Implementados | Múltiplos perfis locais; sem autenticação real. |
+| Avisos gerais e indisponibilidades | Ajustados localmente | Gerais apenas na página; indisponibilidades também na agenda. |
 | Verificação da versão mais recente no GitHub Pages | A confirmar | Abrir a URL e conferir as alterações publicadas. |
 | Testes independentes da equipe | **Pendentes** | Gustavo e Rafael devem testar e registrar resultados. |
 | Evidências e registro de bugs | **Pendentes** | Anotar cenários, resultados e correções. |
@@ -41,7 +45,7 @@ O **Essence** está implementado como protótipo web demonstrativo, com recursos
 
 - Pesquisa e consulta de estabelecimentos.
 - Seleção de serviços, profissionais e horários.
-- Cadastro simplificado do cliente, sem conta.
+- Contas demonstrativas com múltiplos perfis e área Minha conta.
 - Gestão demonstrativa de agendamentos, bloqueios e avisos.
 
 ### Administração demonstrativa
@@ -49,7 +53,8 @@ O **Essence** está implementado como protótipo web demonstrativo, com recursos
 - Cadastro e edição de estabelecimentos.
 - Gestão de profissionais, serviços, duração e preços.
 - Configuração de dias e horários de atendimento.
-- Links opcionais de contato e localização.
+- Links opcionais de contato e localização na página individual do estabelecimento.
+- Foto de capa, descrição e endereço compartilhável por estabelecimento.
 
 ### Produtos
 
@@ -79,13 +84,15 @@ As responsabilidades representam a organização informada do projeto; testes e 
 
 ## Próximos passos
 
-1. Confirmar a atualização publicada no GitHub Pages.
-2. Compartilhar a URL com Gustavo e Rafael para testes independentes.
-3. Registrar cada cenário de teste, resultado esperado, resultado observado, dispositivo e evidência.
-4. Corrigir falhas encontradas e repetir os testes afetados.
-5. Versionar `README.md`, `STATUS.md` e o histórico de desenvolvimento.
-6. Finalizar os materiais exigidos pela disciplina e ensaiar a demonstração.
-7. Sincronizar o PC de casa com cuidado, preservando alterações locais antes de atualizar a branch.
+1. Testar localmente a página individual, links compartilháveis, contatos e avisos em PC e celular.
+2. Realizar commit e push do código e dos documentos atualizados.
+3. Confirmar a atualização publicada no GitHub Pages.
+4. Compartilhar a URL com Gustavo e Rafael para testes independentes.
+5. Registrar cada cenário de teste, resultado esperado, resultado observado, dispositivo e evidência.
+6. Corrigir falhas encontradas e repetir os testes afetados.
+7. Conferir a versão final de `README.md`, `STATUS.md` e do histórico de desenvolvimento.
+8. Finalizar os materiais exigidos pela disciplina e ensaiar a demonstração.
+9. Sincronizar o PC de casa com cuidado, preservando alterações locais antes de atualizar a branch.
 
 ## Critério de conclusão
 

@@ -287,8 +287,90 @@ function renderBusinesses() {
     const q = $('search').value.trim().toLocaleLowerCase('pt-BR');
     const list = data.businesses.filter(b => (category === 'Todos' || b.category === category) && [b.name, b.category, b.description, b.location, ...b.services.map(s => s.name)].join(' ').toLocaleLowerCase('pt-BR').includes(q));
     $('resultCount').textContent = `${list.length} estabelecimento${list.length === 1 ? '' : 's'}`;
-    $('businessGrid').innerHTML = list.length ? list.map(b => `<article class="business-card"><div class="card-cover" style="--cover1:${b.colors[0]};--cover2:${b.colors[1]}"><span class="category-tag">${escapeHtml(b.category)}</span>${b.image ? `<img class="business-logo" src="${escapeHtml(b.image)}" alt="Logo de ${escapeHtml(b.name)}" loading="lazy">` : b.id === 'b1' ? '<img class="business-logo" src="assets/027-barbearia.png" alt="Logo 027 Barbearia" loading="lazy">' : `<span class="cover-icon">${escapeHtml(b.icon)}</span>`}</div><div class="card-content"><h3>${escapeHtml(b.name)}</h3><p>${escapeHtml(b.description)}</p><div class="card-meta">⌖ ${escapeHtml(b.location)} · ${b.professionals.length} profissional(is)</div><div class="card-footer"><span>A partir de ${money(Math.min(...b.services.map(s => s.price)))}</span><div class="essence-card-buttons"><button type="button" data-book="${b.id}">Agendar →</button>${catalogButton(b)}</div></div>${contactLinks(b)}</div></article>`).join('') : '<p class="empty">Nenhum estabelecimento encontrado. Experimente outra busca.</p>'
+    $('businessGrid').innerHTML = list.length ? list.map(b => `<article class="business-card"><div class="card-cover" style="--cover1:${b.colors[0]};--cover2:${b.colors[1]}"><span class="category-tag">${escapeHtml(b.category)}</span>${b.image ? `<img class="business-logo" src="${escapeHtml(b.image)}" alt="Logo de ${escapeHtml(b.name)}" loading="lazy">` : b.id === 'b1' ? '<img class="business-logo" src="assets/027-barbearia.png" alt="Logo 027 Barbearia" loading="lazy">' : `<span class="cover-icon">${escapeHtml(b.icon)}</span>`}</div><div class="card-content"><h3>${escapeHtml(b.name)}</h3><p>${escapeHtml(b.description)}</p><div class="card-meta">⌖ ${escapeHtml(b.location)} · ${b.professionals.length} profissional(is)</div><div class="card-footer"><span>A partir de ${money(Math.min(...b.services.map(s => s.price)))}</span><div class="essence-card-buttons"><button type="button" data-profile="${escapeHtml(b.id)}">Conhecer estabelecimento →</button></div></div></div></article>`).join('') : '<p class="empty">Nenhum estabelecimento encontrado. Experimente outra busca.</p>'
 }
+
+/* Perfil público dinâmico: rota hash compartilhável, sem novo HTML ou backend. */
+function businessSlug(b) {
+    return (b.name || 'estabelecimento').normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+        .toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') + '-' + b.id;
+}
+function profileUrl(b) {
+    return `${location.origin}${location.pathname}#/estabelecimento/${encodeURIComponent(businessSlug(b))}`;
+}
+function findProfileFromHash() {
+    const match = location.hash.match(/^#\/estabelecimento\/([^/?]+)/);
+    if (!match) return null;
+    let slug;
+    try { slug = decodeURIComponent(match[1]); } catch { return null; }
+    return data.businesses.find(b => businessSlug(b) === slug || b.id === slug) || null;
+}
+function profileContacts(b) {
+    const links = [];
+    const insta = safeExternalUrl(b.instagram);
+    const site = safeExternalUrl(b.website);
+    const maps = safeExternalUrl(b.maps);
+    const digits = String(b.whatsapp || '').replace(/\D/g, '').replace(/^55(?=\d{10,11}$)/, '');
+    if (insta) links.push(`<a href="${escapeHtml(insta)}" target="_blank" rel="noopener noreferrer">◎ Instagram</a>`);
+    if (digits.length === 10 || digits.length === 11) links.push(`<a href="https://wa.me/55${escapeHtml(digits)}" target="_blank" rel="noopener noreferrer">◉ WhatsApp</a>`);
+    if (site) links.push(`<a href="${escapeHtml(site)}" target="_blank" rel="noopener noreferrer">↗ Site</a>`);
+    if (maps) links.push(`<a href="${escapeHtml(maps)}" target="_blank" rel="noopener noreferrer">⌖ Como chegar</a>`);
+    return links.length ? `<div class="essence-profile-links">${links.join('')}</div>` : '<p class="muted">Contatos disponíveis em breve.</p>';
+}
+function renderBusinessProfile(b) {
+    const target = $('businessProfile');
+    const notices = getNotices(b);
+    const services = (b.services || []).map(s => `<div class="essence-profile-line"><span>${escapeHtml(s.name)} <small>· ${Number(s.duration)||30} min</small></span><strong>${money(s.price)}</strong></div>`).join('');
+    const noticeHtml = notices.length ? notices.map(n => `<article class="essence-profile-notice ${n.color === 'red' ? 'is-important' : ''}"><strong>${escapeHtml(n.title)}</strong><p>${escapeHtml(n.message)}</p></article>`).join('') : '<p class="muted">Nenhum comunicado geral ativo no momento.</p>';
+    const absences = getBlocks(b).filter(block => block.end >= today()).sort((a, z) => a.start.localeCompare(z.start));
+    const absenceHtml = absences.length ? absences.map(block => `<article class="essence-profile-notice is-important"><strong>${escapeHtml(blockTitle(block, b))}</strong><p>${escapeHtml(block.reason || 'Indisponibilidade programada')}</p></article>`).join('') : '<p class="muted">Nenhuma indisponibilidade programada.</p>';
+    const logo = b.image ? `<img src="${escapeHtml(b.image)}" alt="Logo de ${escapeHtml(b.name)}">` : b.id === 'b1' ? `<img src="assets/027-barbearia.png" alt="Logo 027 Barbearia">` : `<span>${escapeHtml(b.icon || '✦')}</span>`;
+    target.innerHTML = `<div class="essence-profile-wrap">
+        <a class="essence-profile-back" href="#explorar">← Voltar aos estabelecimentos</a>
+        <div class="essence-profile-cover" style="--cover1:${escapeHtml(b.colors?.[0] || '#315879')};--cover2:${escapeHtml(b.colors?.[1] || '#132c43')}">${b.cover ? `<img class="essence-profile-cover-photo" src="${escapeHtml(b.cover)}" alt="Foto de capa de ${escapeHtml(b.name)}">` : ''}</div>
+        <div class="essence-profile-intro"><div class="essence-profile-logo">${logo}</div><div><span class="eyebrow dark">${escapeHtml(b.category)}</span><h1>${escapeHtml(b.name)}</h1><p>${escapeHtml(b.description)}</p><p class="essence-profile-location">⌖ ${escapeHtml(b.location)}</p></div></div>
+        <div class="essence-profile-actions"><button type="button" class="primary-button" data-profile-book="${escapeHtml(b.id)}">Agendar agora →</button>${b.catalogEnabled ? `<button type="button" class="secondary-button" data-profile-catalog="${escapeHtml(b.id)}">Ver produtos</button>` : ''}<button type="button" class="secondary-button" data-profile-share="${escapeHtml(b.id)}">Compartilhar página</button></div>
+        <div class="essence-profile-columns"><div class="essence-profile-card"><h2>✦ Serviços</h2>${services || '<p class="muted">Serviços em breve.</p>'}<button type="button" class="essence-profile-inline" data-profile-book="${escapeHtml(b.id)}">Escolher horário →</button></div>
+        <div class="essence-profile-card essence-profile-announcements"><h2>📣 Avisos e novidades ${notices.length ? `<span class="essence-profile-count">${notices.length}</span>` : ''}</h2><p class="muted">Confira os comunicados antes de agendar.</p>${noticeHtml}</div>
+        <div class="essence-profile-card essence-profile-announcements"><h2>📅 Avisos de indisponibilidade ${absences.length ? `<span class="essence-profile-count">${absences.length}</span>` : ''}</h2><p class="muted">Folgas, feriados e horários bloqueados.</p>${absenceHtml}</div>
+        <div class="essence-profile-card"><h2>⌖ Contato e localização</h2><p>${escapeHtml(b.location)}</p>${profileContacts(b)}</div>
+        <div class="essence-profile-card"><h2>✂ Profissionais</h2><p>${(b.professionals || []).map(p => escapeHtml(p.name)).join(' · ') || 'Equipe em breve'}</p></div></div>
+        <p class="essence-profile-demo">Protótipo acadêmico: dados e reservas são locais a este navegador.</p>
+    </div>`;
+}
+function syncBusinessRoute() {
+    const match = location.hash.startsWith('#/estabelecimento/');
+    const b = findProfileFromHash();
+    const profile = $('businessProfile');
+    if (!match) {
+        document.body.classList.remove('essence-show-profile');
+        profile.hidden = true;
+        return;
+    }
+    document.body.classList.add('essence-show-profile');
+    profile.hidden = false;
+    if (b) renderBusinessProfile(b);
+    else profile.innerHTML = '<div class="essence-profile-wrap"><h1>Estabelecimento não encontrado</h1><p>Os estabelecimentos demonstrativos são salvos neste navegador.</p><a class="essence-profile-back" href="#explorar">← Voltar à busca</a></div>';
+    window.scrollTo({top:0,behavior:'instant'});
+}
+window.addEventListener('hashchange', syncBusinessRoute);
+$('businessProfile').addEventListener('click', async e => {
+    const book = e.target.closest('[data-profile-book]');
+    const catalog = e.target.closest('[data-profile-catalog]');
+    const share = e.target.closest('[data-profile-share]');
+    if (book) openBooking(book.dataset.profileBook);
+    if (catalog) renderCatalog(catalog.dataset.profileCatalog);
+    if (share) {
+        const b = findBusiness(share.dataset.profileShare);
+        if (!b) return;
+        const url = profileUrl(b);
+        try {
+            if (navigator.share) await navigator.share({title:b.name,url});
+            else if (navigator.clipboard?.writeText) { await navigator.clipboard.writeText(url); notify('Link copiado!'); }
+            else { window.prompt('Copie o link do estabelecimento:',url); }
+        } catch (err) { if (err.name !== 'AbortError') notify('Não foi possível compartilhar o link.'); }
+    }
+});
 
 function selectOptions(items, label) {
     return items.map(x => `<option value="${escapeHtml(x.id)}">${escapeHtml(label(x))}</option>`).join('')
@@ -434,19 +516,12 @@ function bookingNoticeEntries() {
 
 function renderBookingNotices() {
     const target = $('bookingNotices');
-    const {absences, general} = bookingNoticeEntries();
+    const {absences} = bookingNoticeEntries();
     const buttons = [];
     if (absences.length) {
         buttons.push(`<button type="button" class="notice-open-button" data-open-notices="absences">
             <span>Avisos de indisponibilidade</span>
             <span class="notice-count">${absences.length}</span>
-            <span aria-hidden="true">›</span>
-        </button>`);
-    }
-    if (general.length) {
-        buttons.push(`<button type="button" class="notice-open-button" data-open-notices="general">
-            <span>Avisos gerais</span>
-            <span class="notice-count">${general.length}</span>
             <span aria-hidden="true">›</span>
         </button>`);
     }
@@ -617,12 +692,12 @@ function renderAdmin() {
                     <label class="form-full">Motivo da ausência<textarea id="blockReason" maxlength="240" placeholder="Ex.: Férias, consulta médica, saída antecipada..." required></textarea></label>
                     <button type="button" class="settings-button danger form-full" data-add-block="1">▣ Bloquear na agenda</button>
                 </div>
-                <h3>Ausências cadastradas</h3>
+                <h3 class="essence-blocks-heading">Ausências cadastradas</h3>
                 ${blocks.length ? blocks.map(block => `<div class="essence-notice red"><strong>${escapeHtml(blockTitle(block, b))}</strong><p>${escapeHtml(block.reason || 'Indisponibilidade programada')}</p><div class="notice-actions"><button type="button" data-remove-block-id="${escapeHtml(block.id)}">Remover bloqueio</button></div></div>`).join('') : '<p class="muted">Nenhuma ausência cadastrada.</p>'}
             </section>
             <section class="settings-section">
                 <h3>Avisos aos clientes</h3>
-                <p class="muted">Divulgue eventos, promoções e comunicados. Os avisos aparecem na tela de agendamento.</p>
+                <p class="muted">Divulgue eventos, promoções e comunicados. Os avisos gerais aparecem na página pública do estabelecimento. As indisponibilidades também são exibidas na agenda.</p>
                 <div class="notice-form">
                     <label class="form-full">Título<input id="noticeTitle" maxlength="80" placeholder="Ex.: Agenda de fim de ano"></label>
                     <label class="form-full">Mensagem<textarea id="noticeMessage" maxlength="400" placeholder="Escreva o comunicado..."></textarea></label>
@@ -770,8 +845,10 @@ function editBusiness() {
             {name: 'close', label: 'Fechamento (HH:MM)', value: b.hours?.close || '18:00'},
             {name: 'days', label: 'Dias da semana (0=Dom, 1=Seg ... 6=Sáb; separados por vírgula)', value: (b.hours?.days || [0,1,2,3,4,5,6]).join(',')},
             {name: 'instagram', label: 'Instagram (URL opcional)', value: b.instagram || '', required: false},
+            {name: 'website', label: 'Site oficial (URL opcional)', value: b.website || '', required: false},
             {name: 'whatsapp', label: 'WhatsApp com DDD (opcional)', value: b.whatsapp || '', required: false},
             {name: 'maps', label: 'Google Maps (URL opcional)', value: b.maps || '', required: false},
+            {name: 'cover', label: 'Foto de capa (opcional, até 250 KB)', type: 'file', required: false, preview: b.cover || ''},
             {name: 'image', label: 'Nova imagem (opcional, até 250 KB)', type: 'file', required: false, preview: b.image || (b.id === 'b1' ? 'assets/027-barbearia.png' : '')}
         ],
         async onSave(values) {
@@ -781,7 +858,7 @@ function editBusiness() {
             const days = [...new Set(values.days.split(',').map(x => Number(x.trim())))];
             if (!/^([01]\d|2[0-3]):[0-5]\d$/.test(open) || !/^([01]\d|2[0-3]):[0-5]\d$/.test(close) || minutes(close) <= minutes(open)) return 'Informe horários válidos.';
             if (!days.length || days.some(d => !Number.isInteger(d) || d < 0 || d > 6)) return 'Informe dias entre 0 e 6 separados por vírgula.';
-            if ((values.instagram && !safeExternalUrl(values.instagram)) || (values.maps && !safeExternalUrl(values.maps))) return 'Use links completos com https://';
+            if ((values.instagram && !safeExternalUrl(values.instagram)) || (values.maps && !safeExternalUrl(values.maps)) || (values.website && !safeExternalUrl(values.website))) return 'Use links completos com https://';
             const whatsapp = values.whatsapp.replace(/\D/g, '');
             if (whatsapp && (whatsapp.length < 10 || whatsapp.length > 13)) return 'Informe WhatsApp com DDD.';
             const conflictsHours = data.bookings.some(x => x.businessId === b.id && x.status === 'active' && (!days.includes(new Date(x.date + 'T12:00:00').getDay()) || minutes(x.time) < minutes(open) || minutes(x.time) + x.duration > minutes(close)));
@@ -799,8 +876,15 @@ function editBusiness() {
                     });
                 } catch { return 'Não foi possível ler a imagem.'; }
             }
-            Object.assign(b, {name, description, location, image, category: values.category.trim(), hours: {open, close, days}, instagram: values.instagram.trim(), whatsapp, maps: values.maps.trim()});
-            save(); renderFilters(); renderBusinesses();
+            let cover = b.cover || '';
+            if (values.cover?.size) {
+                if (values.cover.size > 250000) return 'A foto de capa deve ter até 250 KB.';
+                if (!['image/png','image/jpeg','image/webp'].includes(values.cover.type)) return 'Escolha uma capa PNG, JPG ou WebP.';
+                try { cover = await new Promise((resolve,reject) => {const reader = new FileReader();reader.onload=()=>resolve(reader.result);reader.onerror=reject;reader.readAsDataURL(values.cover);}); }
+                catch { return 'Não foi possível ler a foto de capa.'; }
+            }
+            Object.assign(b, {name, description, location, image, cover, website: values.website.trim(), category: values.category.trim(), hours: {open, close, days}, instagram: values.instagram.trim(), whatsapp, maps: values.maps.trim()});
+            save(); renderFilters(); renderBusinesses(); if (findProfileFromHash()) syncBusinessRoute();
             $('adminBusiness').querySelector(`option[value="${b.id}"]`).textContent = b.name;
             renderAdmin();
             notify('Estabelecimento atualizado.');
@@ -975,6 +1059,12 @@ $('filters').addEventListener('click', e => {
     renderBusinesses()
 });
 $('businessGrid').addEventListener('click', e => {
+    const profile = e.target.closest('[data-profile]');
+    if (profile) {
+        const b = findBusiness(profile.dataset.profile);
+        if (b) location.hash = '/estabelecimento/' + encodeURIComponent(businessSlug(b));
+        return;
+    }
     const book = e.target.closest('[data-book]');
     const catalog = e.target.closest('[data-catalog]');
     if (book) openBooking(book.dataset.book);
@@ -1116,6 +1206,7 @@ $('resetDemo').addEventListener('click', () => {
 });
 renderFilters();
 renderBusinesses();
+syncBusinessRoute();
 
 $('partnerInterest').addEventListener('click', () => {
     $('partnerError').textContent = '';
@@ -1180,16 +1271,17 @@ $('partnerForm').addEventListener('submit', async e => {
         })
     }
     const instagram = String(fd.get('instagram') || '').trim();
+    const website = String(fd.get('website') || '').trim();
     const maps = String(fd.get('maps') || '').trim();
     const whatsapp = String(fd.get('whatsapp') || '').replace(/\D/g, '');
-    if ((instagram && !safeExternalUrl(instagram)) || (maps && !safeExternalUrl(maps)) || (whatsapp && (whatsapp.length < 10 || whatsapp.length > 13))) {
+    if ((instagram && !safeExternalUrl(instagram)) || (website && !safeExternalUrl(website)) || (maps && !safeExternalUrl(maps)) || (whatsapp && (whatsapp.length < 10 || whatsapp.length > 13))) {
         error.textContent = 'Confira os links de Instagram, Maps e o WhatsApp com DDD.';
         return;
     }
     const id = 'b' + Date.now();
     data.businesses.push({
         catalogEnabled: fd.get('catalogEnabled') === 'yes',
-        products: [], instagram, whatsapp, maps,
+        products: [], instagram, website, whatsapp, maps,
         id,
         name,
         category: String(fd.get('category')),
