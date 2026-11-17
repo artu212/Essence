@@ -2468,197 +2468,63 @@ dialog.dialog[open] {
 }
 
 /* Essence 2.0 — contas demonstrativas e correções mobile */
-.essence-account-dialog {
-    width: min(94vw, 620px);
-    max-height: 90dvh;
-    overflow-y: auto;
-}
-
-.essence-account-tabs {
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-    margin: 16px 0;
-}
-
-.essence-account-form {
-    display: grid;
-    gap: 14px;
-    margin: 12px 0;
-}
-
-.essence-account-form label {
-    display: grid;
-    gap: 6px;
-    min-width: 0;
-}
-
-.essence-account-form input {
-    width: 100%;
-    min-width: 0;
-    max-width: 100%;
-    font-size: 16px;
-}
-
-.essence-account-details {
-    display: grid;
-    gap: 10px;
-    max-height: 45dvh;
-    overflow: auto;
-    margin: 14px 0;
-}
-
-.essence-checkout {
-    width: 100%;
-    margin-top: 12px;
-}
-
-button, a {
-    touch-action: manipulation;
-}
-
-.dialog input, .dialog select, .dialog textarea {
-    min-width: 0;
-    max-width: 100%;
-    box-sizing: border-box;
-    font-size: 16px;
-}
-
-.admin-settings, .settings-section, .admin-list, .admin-item {
-    min-width: 0;
-    max-width: 100%;
-}
-
-@media (max-width: 680px) {
-    .admin-dialog {
-        width: calc(100vw - 16px);
-        max-width: calc(100vw - 16px);
-        padding: 16px;
-        max-height: 94dvh;
-        overflow-y: auto;
-    }
-
-    .admin-tabs {
-        display: grid;
-        grid-template-columns:repeat(2, minmax(0, 1fr));
-        gap: 8px;
-        overflow: visible;
-    }
-
-    .admin-tabs button {
-        min-width: 0;
-        width: 100%;
-        white-space: normal;
-        overflow-wrap: anywhere;
-        font-size: 13px;
-        padding: 10px 6px;
-    }
-
-    .admin-settings input, .admin-settings select, .admin-settings textarea {
-        width: 100%;
-        min-width: 0;
-        max-width: 100%;
-    }
-
-    .admin-item {
-        flex-wrap: wrap;
-        gap: 10px;
-    }
-
-    .topbar nav {
-        flex-wrap: wrap;
-    }
+.essence-account-dialog {width:min(94vw, 620px);max-height:90dvh;overflow-y:auto;}
+.essence-account-tabs {display:flex;gap:10px;flex-wrap:wrap;margin:16px 0;}
+.essence-account-form {display:grid;gap:14px;margin:12px 0;}
+.essence-account-form label {display:grid;gap:6px;min-width:0;}
+.essence-account-form input {width:100%;min-width:0;max-width:100%;font-size:16px;}
+.essence-account-details {display:grid;gap:10px;max-height:45dvh;overflow:auto;margin:14px 0;}
+.essence-checkout {width:100%;margin-top:12px;}
+button,a {touch-action:manipulation;}
+.dialog input,.dialog select,.dialog textarea {min-width:0;max-width:100%;box-sizing:border-box;font-size:16px;}
+.admin-settings,.settings-section,.admin-list,.admin-item {min-width:0;max-width:100%;}
+@media (max-width:680px) {
+    .admin-dialog {width:calc(100vw - 16px);max-width:calc(100vw - 16px);padding:16px;max-height:94dvh;overflow-y:auto;}
+    .admin-tabs {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;overflow:visible;}
+    .admin-tabs button {min-width:0;width:100%;white-space:normal;overflow-wrap:anywhere;font-size:13px;padding:10px 6px;}
+    .admin-settings input,.admin-settings select,.admin-settings textarea {width:100%;min-width:0;max-width:100%;}
+    .admin-item {flex-wrap:wrap;gap:10px;}
+    .topbar nav {flex-wrap:wrap;}
 }
 
 /* Ajuste visual: cadastro/login demonstrativos — padrão Essence */
 /* O atributo hidden precisa prevalecer sobre display:grid/flex dos formulários. */
-.essence-account-dialog [hidden] {
-    display: none !important;
-}
-
-.essence-account-dialog {
-    box-sizing: border-box;
-}
-
-.essence-account-dialog .essence-account-tabs {
-    gap: 10px;
-}
-
+.essence-account-dialog [hidden] { display: none !important; }
+.essence-account-dialog { box-sizing: border-box; }
+.essence-account-dialog .essence-account-tabs { gap: 10px; }
 .essence-account-dialog .essence-account-tabs > button {
-    border: 1px solid #d8e0e9;
-    border-radius: 10px;
-    padding: 11px 18px;
-    background: #fff;
-    color: #17283d;
-    font-weight: 650;
+    border: 1px solid #d8e0e9; border-radius: 10px; padding: 11px 18px;
+    background: #fff; color: #17283d; font-weight: 650;
     transition: background .15s, border-color .15s;
 }
-
 .essence-account-dialog .essence-account-tabs > button.active {
-    background: #eaf3fb;
-    border-color: #4d8abf;
-    color: #24669d;
+    background: #eaf3fb; border-color: #4d8abf; color: #24669d;
 }
-
-.essence-account-dialog .essence-account-form {
-    gap: 16px;
-}
-
+.essence-account-dialog .essence-account-form { gap: 16px; }
 .essence-account-dialog .essence-account-form label {
-    display: flex;
-    flex-direction: column;
-    gap: 7px;
-    font-size: 13px;
-    font-weight: 650;
-    color: #17283d;
+    display: flex; flex-direction: column; gap: 7px;
+    font-size: 13px; font-weight: 650; color: #17283d;
 }
-
 .essence-account-dialog .essence-account-form input {
-    display: block;
-    width: 100%;
-    min-height: 44px;
-    box-sizing: border-box;
-    padding: 11px 13px;
-    border: 1px solid #d8e0e9;
-    border-radius: 9px;
-    background: #fff;
-    color: #17283d;
-    font-size: 16px;
-    outline: none;
-    box-shadow: none;
+    display: block; width: 100%; min-height: 44px; box-sizing: border-box;
+    padding: 11px 13px; border: 1px solid #d8e0e9; border-radius: 9px;
+    background: #fff; color: #17283d; font-size: 16px;
+    outline: none; box-shadow: none;
 }
-
 .essence-account-dialog .essence-account-form input:focus {
-    border-color: #4d8abf;
-    box-shadow: 0 0 0 3px rgba(77, 138, 191, .15);
+    border-color: #4d8abf; box-shadow: 0 0 0 3px rgba(77,138,191,.15);
 }
-
-.essence-account-dialog .essence-account-form input::placeholder {
-    color: #8594a6;
-}
-
+.essence-account-dialog .essence-account-form input::placeholder { color: #8594a6; }
 .essence-account-dialog .essence-account-form .primary-button {
-    width: 100%;
-    min-height: 44px;
-    margin-top: 5px;
+    width: 100%; min-height: 44px; margin-top: 5px;
 }
-
 @media (max-width: 680px) {
-    .essence-account-dialog {
-        width: calc(100vw - 20px);
-        padding: 20px;
-    }
-
-    .essence-account-dialog .essence-account-tabs > button {
-        flex: 1;
-    }
+    .essence-account-dialog { width: calc(100vw - 20px); padding: 20px; }
+    .essence-account-dialog .essence-account-tabs > button { flex: 1; }
 }
 
 /* Campos de senha seguem a mesma aparência dos demais campos do Essence. */
-.essence-account-dialog .essence-account-form input[type='password'] {
-    appearance: none;
-    -webkit-appearance: none;
-}
+.essence-account-dialog .essence-account-form input[type='password'] { appearance: none; -webkit-appearance: none; }
 
 /* Aviso de finalização do carrinho: integrado ao visual do Essence. */
 .essence-checkout-notice {
@@ -2682,14 +2548,12 @@ button, a {
     transition: opacity .2s ease, transform .2s ease, visibility .2s;
     pointer-events: none;
 }
-
 .essence-checkout-notice.is-visible {
     opacity: 1;
     visibility: visible;
     transform: translateY(0);
     pointer-events: auto;
 }
-
 .essence-checkout-notice-icon {
     flex: 0 0 30px;
     display: grid;
@@ -2701,29 +2565,13 @@ button, a {
     color: #197548;
     font-weight: 800;
 }
-
 .essence-checkout-notice.is-error .essence-checkout-notice-icon {
     background: #fff0ef;
     color: #b42318;
 }
-
-.essence-checkout-notice-body {
-    flex: 1;
-    min-width: 0;
-}
-
-.essence-checkout-notice-body strong {
-    display: block;
-    font-size: 15px;
-    margin-bottom: 4px;
-}
-
-.essence-checkout-notice-body p {
-    margin: 0;
-    font-size: 13px;
-    line-height: 1.5;
-}
-
+.essence-checkout-notice-body { flex: 1; min-width: 0; }
+.essence-checkout-notice-body strong { display: block; font-size: 15px; margin-bottom: 4px; }
+.essence-checkout-notice-body p { margin: 0; font-size: 13px; line-height: 1.5; }
 .essence-checkout-notice-close {
     flex: 0 0 auto;
     border: 0;
@@ -2734,7 +2582,6 @@ button, a {
     cursor: pointer;
     padding: 0 2px;
 }
-
 @media (max-width: 600px) {
     .essence-checkout-notice {
         left: 16px;
@@ -2745,279 +2592,112 @@ button, a {
 }
 
 /* ESSENCE — Perfil de estabelecimento. Reutiliza as cores e raios existentes. */
-.essence-profile-page[hidden] {
-    display: none !important;
-}
-
+.essence-profile-page[hidden] { display:none!important; }
 body.essence-show-profile .hero, body.essence-show-profile .how,
-body.essence-show-profile .explore, body.essence-show-profile .partner-section {
-    display: none !important;
-}
-
-.essence-profile-page {
-    padding-top: 30px;
-    padding-bottom: 64px;
-}
-
-.essence-profile-wrap {
-    max-width: 1120px;
-    margin: 0 auto;
-}
-
-.essence-profile-back {
-    display: inline-block;
-    margin-bottom: 18px;
-    color: var(--blue);
-    font-weight: 650;
-}
-
-.essence-profile-cover {
-    height: 220px;
-    border-radius: var(--radius);
-    background: linear-gradient(125deg, var(--cover1), var(--cover2));
-    overflow: hidden;
-}
-
-.essence-profile-cover-photo {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.essence-profile-intro {
-    display: flex;
-    align-items: center;
-    gap: 24px;
-    padding: 24px 0;
-}
-
-.essence-profile-logo {
-    width: 96px;
-    height: 96px;
-    flex: 0 0 96px;
-    border: 4px solid #fff;
-    background: #f2f5fa;
-    border-radius: 20px;
-    display: grid;
-    place-items: center;
-    overflow: hidden;
-    box-shadow: 0 5px 20px #14253c1c;
-}
-
-.essence-profile-logo img {
-    max-width: 100%;
-    max-height: 100%;
-    object-fit: contain;
-}
-
-.essence-profile-logo span {
-    font-size: 48px;
-    color: var(--blue);
-}
-
-.essence-profile-intro h1 {
-    margin: 5px 0 8px;
-    font-size: clamp(25px, 4vw, 38px);
-    color: var(--navy);
-}
-
-.essence-profile-intro p {
-    margin: 6px 0;
-    line-height: 1.6;
-}
-
-.essence-profile-location {
-    color: var(--muted);
-}
-
-.essence-profile-actions {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 12px;
-    margin-bottom: 28px;
-}
-
-.essence-profile-actions button {
-    min-height: 48px;
-    border-radius: 12px;
-}
-
-.essence-profile-columns {
-    display: grid;
-    grid-template-columns:repeat(2, minmax(0, 1fr));
-    gap: 20px;
-}
-
-.essence-profile-card {
-    min-width: 0;
-    background: #fff;
-    border: 1px solid var(--line);
-    border-radius: var(--radius);
-    padding: 24px;
-}
-
-.essence-profile-card h2 {
-    font-size: 20px;
-    color: var(--navy);
-    margin: 0 0 14px;
-}
-
-.essence-profile-card p {
-    line-height: 1.6;
-    overflow-wrap: anywhere;
-}
-
-.essence-profile-line {
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    gap: 12px;
-    border-bottom: 1px solid var(--line);
-    padding: 12px 0;
-}
-
-.essence-profile-line small {
-    color: var(--muted);
-}
-
-.essence-profile-line strong {
-    white-space: nowrap;
-}
-
-.essence-profile-inline {
-    border: 0;
-    background: none;
-    padding: 16px 0 0;
-    color: var(--blue);
-    font-weight: 700;
-}
-
-.essence-profile-announcements {
-    background: #f2f7ff;
-    border: 1px solid #b9d3ed;
-}
-
-.essence-profile-count {
-    background: var(--blue);
-    color: #fff;
-    border-radius: 99px;
-    padding: 3px 9px;
-    font-size: 13px;
-}
-
-.essence-profile-notice {
-    background: #fff;
-    border-left: 4px solid #2f8a61;
-    border-radius: 10px;
-    padding: 13px 15px;
-    margin-top: 10px;
-}
-
-.essence-profile-notice.is-important {
-    border-left-color: #bc3041;
-}
-
-.essence-profile-notice p {
-    margin: 7px 0 0;
-}
-
-.essence-profile-links {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    margin-top: 16px;
-}
-
-.essence-profile-links a {
-    border: 1px solid #cad9ea;
-    border-radius: 12px;
-    padding: 10px 13px;
-    color: var(--blue);
-    font-weight: 650;
-}
-
-.essence-profile-demo {
-    margin-top: 22px;
-    color: var(--muted);
-    font-size: 13px;
-}
-
+body.essence-show-profile .explore, body.essence-show-profile .partner-section { display:none!important; }
+.essence-profile-page { padding-top:30px; padding-bottom:64px; }
+.essence-profile-wrap { max-width:1120px; margin:0 auto; }
+.essence-profile-back { display:inline-block; margin-bottom:18px; color:var(--blue); font-weight:650; }
+.essence-profile-cover { height:220px; border-radius:var(--radius); background:linear-gradient(125deg,var(--cover1),var(--cover2)); overflow:hidden; }
+.essence-profile-cover-photo { width:100%; height:100%; object-fit:cover; }
+.essence-profile-intro { display:flex; align-items:center; gap:24px; padding:24px 0; }
+.essence-profile-logo { width:96px; height:96px; flex:0 0 96px; border:4px solid #fff; background:#f2f5fa; border-radius:20px; display:grid; place-items:center; overflow:hidden; box-shadow:0 5px 20px #14253c1c; }
+.essence-profile-logo img { max-width:100%; max-height:100%; object-fit:contain; }
+.essence-profile-logo span { font-size:48px; color:var(--blue); }
+.essence-profile-intro h1 { margin:5px 0 8px; font-size:clamp(25px,4vw,38px); color:var(--navy); }
+.essence-profile-intro p { margin:6px 0; line-height:1.6; }
+.essence-profile-location { color:var(--muted); }
+.essence-profile-actions { display:flex; flex-wrap:wrap; gap:12px; margin-bottom:28px; }
+.essence-profile-actions button { min-height:48px; border-radius:12px; }
+.essence-profile-columns { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:20px; }
+.essence-profile-card { min-width:0; background:#fff; border:1px solid var(--line); border-radius:var(--radius); padding:24px; }
+.essence-profile-card h2 { font-size:20px; color:var(--navy); margin:0 0 14px; }
+.essence-profile-card p { line-height:1.6; overflow-wrap:anywhere; }
+.essence-profile-line { display:flex; align-items:baseline; justify-content:space-between; gap:12px; border-bottom:1px solid var(--line); padding:12px 0; }
+.essence-profile-line small { color:var(--muted); }
+.essence-profile-line strong { white-space:nowrap; }
+.essence-profile-inline { border:0; background:none; padding:16px 0 0; color:var(--blue); font-weight:700; }
+.essence-profile-announcements { background:#f2f7ff; border:1px solid #b9d3ed; }
+.essence-profile-count { background:var(--blue); color:#fff; border-radius:99px; padding:3px 9px; font-size:13px; }
+.essence-profile-notice { background:#fff; border-left:4px solid #2f8a61; border-radius:10px; padding:13px 15px; margin-top:10px; }
+.essence-profile-notice.is-important { border-left-color:#bc3041; }
+.essence-profile-notice p { margin:7px 0 0; }
+.essence-profile-links { display:flex; flex-wrap:wrap; gap:10px; margin-top:16px; }
+.essence-profile-links a { border:1px solid #cad9ea; border-radius:12px; padding:10px 13px; color:var(--blue); font-weight:650; }
+.essence-profile-demo { margin-top:22px; color:var(--muted); font-size:13px; }
 /* Formulários iOS: inputs date/time e demais controles respeitam os cartões. */
-input, select, textarea {
-    max-width: 100%;
-    min-width: 0;
-}
-
-input[type="date"], input[type="datetime-local"], input[type="time"] {
-    width: 100%;
-    min-width: 0;
-    max-width: 100%;
-    box-sizing: border-box;
-}
-
-@media (max-width: 700px) {
-    .essence-profile-page {
-        padding: 20px 16px 48px;
-    }
-
-    .essence-profile-cover {
-        height: 155px;
-    }
-
-    .essence-profile-intro {
-        align-items: flex-start;
-        gap: 13px;
-        padding: 18px 0;
-    }
-
-    .essence-profile-logo {
-        width: 68px;
-        height: 68px;
-        flex-basis: 68px;
-        border-radius: 15px;
-    }
-
-    .essence-profile-intro h1 {
-        font-size: 24px;
-    }
-
-    .essence-profile-actions {
-        display: grid;
-        grid-template-columns:repeat(2, minmax(0, 1fr));
-    }
-
-    .essence-profile-actions .primary-button {
-        grid-column: 1/-1;
-    }
-
-    .essence-profile-actions button {
-        min-width: 0;
-        width: 100%;
-        padding: 12px 8px;
-        font-size: 14px;
-    }
-
-    .essence-profile-columns {
-        grid-template-columns:minmax(0, 1fr);
-        gap: 14px;
-    }
-
-    .essence-profile-card {
-        padding: 18px;
-    }
-
-    .essence-profile-line {
-        font-size: 14px;
-    }
-
-    input[type="date"], input[type="datetime-local"], input[type="time"] {
-        -webkit-appearance: none;
-        appearance: none;
-    }
+input, select, textarea { max-width:100%; min-width:0; }
+input[type="date"],input[type="datetime-local"],input[type="time"] { width:100%; min-width:0; max-width:100%; box-sizing:border-box; }
+@media(max-width:700px) {
+    .essence-profile-page { padding:20px 16px 48px; }
+    .essence-profile-cover { height:155px; }
+    .essence-profile-intro { align-items:flex-start; gap:13px; padding:18px 0; }
+    .essence-profile-logo { width:68px; height:68px; flex-basis:68px; border-radius:15px; }
+    .essence-profile-intro h1 { font-size:24px; }
+    .essence-profile-actions { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); }
+    .essence-profile-actions .primary-button { grid-column:1/-1; }
+    .essence-profile-actions button { min-width:0; width:100%; padding:12px 8px; font-size:14px; }
+    .essence-profile-columns { grid-template-columns:minmax(0,1fr); gap:14px; }
+    .essence-profile-card { padding:18px; }
+    .essence-profile-line { font-size:14px; }
+    input[type="date"],input[type="datetime-local"],input[type="time"] { -webkit-appearance:none; appearance:none; }
 }
 
 /* Respiro entre o botão de bloqueio e a listagem de ausências. */
-.admin-settings .essence-blocks-heading {
-    margin-top: 24px;
-    margin-bottom: 12px;
+.admin-settings .essence-blocks-heading { margin-top: 24px; margin-bottom: 12px; }
+
+/* Revisão mobile — campos, modais e textos sem extrapolar a largura. */
+.dialog, .dialog *, .business-card, .business-card *, .essence-profile-page,
+.essence-profile-page *, .settings-section, .settings-section * { box-sizing: border-box; }
+.dialog, .admin-dialog, .essence-action-dialog { max-width: calc(100vw - 16px); }
+.dialog label, .dialog form, .dialog fieldset, .dialog .admin-item,
+.essence-profile-card, .settings-section, .date-block-form,
+.notice-form, .essence-editor-fields { min-width: 0; }
+.dialog input:not([type="checkbox"]):not([type="radio"]),
+.dialog select, .dialog textarea, .settings-section input:not([type="checkbox"]),
+.settings-section select, .settings-section textarea {
+    display: block; width: 100%; max-width: 100%; min-width: 0;
+    box-sizing: border-box; font-size: max(16px, 1em);
+}
+.essence-account-dialog .essence-account-tabs > button {
+    min-width: 0; overflow-wrap: anywhere; white-space: normal;
+    line-height: 1.3; text-align: center;
+}
+.essence-account-dialog .essence-account-tabs {
+    display: grid; grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+.essence-account-dialog #accountGuest .essence-account-tabs {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.essence-account-dialog .essence-account-tabs > button {
+    padding: 11px 8px; font-size: 14px;
+}
+.essence-account-dialog .admin-item { min-width: 0; flex-wrap: wrap; overflow-wrap: anywhere; }
+.essence-account-dialog .admin-item > div { min-width: 0; overflow-wrap: anywhere; }
+.essence-account-dialog .admin-item small { display: block; overflow-wrap: anywhere; }
+.essence-profile-intro > div:last-child { min-width: 0; overflow-wrap: anywhere; }
+.essence-profile-wrap { min-width: 0; max-width: 100%; }
+.essence-editor-weekdays {
+    border: 1px solid #d8e0e9; border-radius: 12px; padding: 14px;
+    display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px;
+    min-width: 0;
+}
+.essence-editor-weekdays legend { font-weight: 650; padding: 0 5px; }
+.essence-editor-weekdays label {
+    display: flex; flex-direction: row; align-items: center; gap: 7px;
+    min-width: 0; margin: 0; font-weight: 600;
+}
+.essence-editor-weekdays input[type="checkbox"] {
+    width: 20px; height: 20px; flex: 0 0 20px; accent-color: #1685e5;
+}
+@media (max-width: 680px) {
+    .essence-editor-weekdays { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .essence-account-dialog .essence-account-tabs > button { font-size: 13px; padding: 10px 5px; }
+    .essence-account-dialog .essence-account-tabs { gap: 6px; }
+    .essence-account-dialog .admin-actions { flex-wrap: wrap; }
+    .essence-profile-intro { min-width: 0; }
+    .essence-profile-card { padding: 18px; }
+}
+@media (max-width: 350px) {
+    .essence-account-dialog .essence-account-tabs { grid-template-columns: minmax(0, 1fr); }
 }

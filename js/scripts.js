@@ -327,10 +327,10 @@ function renderBusinessProfile(b) {
     const logo = b.image ? `<img src="${escapeHtml(b.image)}" alt="Logo de ${escapeHtml(b.name)}">` : b.id === 'b1' ? `<img src="assets/027-barbearia.png" alt="Logo 027 Barbearia">` : `<span>${escapeHtml(b.icon || '✦')}</span>`;
     target.innerHTML = `<div class="essence-profile-wrap">
         <a class="essence-profile-back" href="#explorar">← Voltar aos estabelecimentos</a>
-        <div class="essence-profile-cover" style="--cover1:${escapeHtml(b.colors?.[0] || '#315879')};--cover2:${escapeHtml(b.colors?.[1] || '#132c43')}">${b.cover ? `<img class="essence-profile-cover-photo" src="${escapeHtml(b.cover)}" alt="Foto de capa de ${escapeHtml(b.name)}">` : ''}</div>
+        ${b.cover ? `<div class="essence-profile-cover"><img class="essence-profile-cover-photo" src="${escapeHtml(b.cover)}" alt="Foto de capa de ${escapeHtml(b.name)}"></div>` : ''}
         <div class="essence-profile-intro"><div class="essence-profile-logo">${logo}</div><div><span class="eyebrow dark">${escapeHtml(b.category)}</span><h1>${escapeHtml(b.name)}</h1><p>${escapeHtml(b.description)}</p><p class="essence-profile-location">⌖ ${escapeHtml(b.location)}</p></div></div>
         <div class="essence-profile-actions"><button type="button" class="primary-button" data-profile-book="${escapeHtml(b.id)}">Agendar agora →</button>${b.catalogEnabled ? `<button type="button" class="secondary-button" data-profile-catalog="${escapeHtml(b.id)}">Ver produtos</button>` : ''}<button type="button" class="secondary-button" data-profile-share="${escapeHtml(b.id)}">Compartilhar página</button></div>
-        <div class="essence-profile-columns"><div class="essence-profile-card"><h2>✦ Serviços</h2>${services || '<p class="muted">Serviços em breve.</p>'}<button type="button" class="essence-profile-inline" data-profile-book="${escapeHtml(b.id)}">Escolher horário →</button></div>
+        <div class="essence-profile-columns">
         <div class="essence-profile-card essence-profile-announcements"><h2>📣 Avisos e novidades ${notices.length ? `<span class="essence-profile-count">${notices.length}</span>` : ''}</h2><p class="muted">Confira os comunicados antes de agendar.</p>${noticeHtml}</div>
         <div class="essence-profile-card essence-profile-announcements"><h2>📅 Avisos de indisponibilidade ${absences.length ? `<span class="essence-profile-count">${absences.length}</span>` : ''}</h2><p class="muted">Folgas, feriados e horários bloqueados.</p>${absenceHtml}</div>
         <div class="essence-profile-card"><h2>⌖ Contato e localização</h2><p>${escapeHtml(b.location)}</p>${profileContacts(b)}</div>
@@ -430,7 +430,9 @@ function getBlocks(b) {
 }
 
 function getNotices(b) {
-    return (b.notices || []).filter(n => !n.until || n.until >= today());
+    return (b.notices || []).filter(n =>
+        (!n.start || n.start <= today()) && (!n.until || n.until >= today())
+    );
 }
 
 function blockTitle(block, b) {
@@ -702,10 +704,11 @@ function renderAdmin() {
                     <label class="form-full">Título<input id="noticeTitle" maxlength="80" placeholder="Ex.: Agenda de fim de ano"></label>
                     <label class="form-full">Mensagem<textarea id="noticeMessage" maxlength="400" placeholder="Escreva o comunicado..."></textarea></label>
                     <label>Cor do aviso<select id="noticeColor"><option value="green">Verde</option><option value="red">Vermelho</option></select></label>
-                    <label>Exibir até (opcional)<input id="noticeUntil" type="date" min="${today()}"></label>
+                    <label>Data de início<input id="noticeStart" type="date" value="${today()}" min="${today()}" required></label>
+                    <label>Data de fim (opcional)<input id="noticeUntil" type="date" min="${today()}"></label>
                     <button type="button" class="settings-button primary form-full" data-add-notice="1">＋ Publicar aviso</button>
                 </div>
-                ${notices.length ? notices.map(notice => `<div class="essence-notice ${notice.color === 'red' ? 'red' : 'green'}"><strong>${escapeHtml(notice.title)}</strong><p>${escapeHtml(notice.message)}${notice.until ? `\nVálido até ${localDate(notice.until)}` : ''}</p><div class="notice-actions"><button type="button" data-remove-notice="${escapeHtml(notice.id)}">Excluir aviso</button></div></div>`).join('') : '<p class="muted">Nenhum aviso publicado.</p>'}
+                ${notices.length ? notices.map(notice => `<div class="essence-notice ${notice.color === 'red' ? 'red' : 'green'}"><strong>${escapeHtml(notice.title)}</strong><p>${escapeHtml(notice.message)}${notice.start ? `\nInício: ${localDate(notice.start)}` : ''}${notice.until ? `\nFim: ${localDate(notice.until)}` : ''}</p><div class="notice-actions"><button type="button" data-remove-notice="${escapeHtml(notice.id)}">Excluir aviso</button></div></div>`).join('') : '<p class="muted">Nenhum aviso publicado.</p>'}
             </section>
         </div>`;
     } else if (adminTab === 'products') {
@@ -730,6 +733,26 @@ function openEditor({title, fields, onSave}) {
     $('editorFields').replaceChildren();
 
     for (const field of fields) {
+        if (field.type === 'weekdays') {
+            const fieldset = document.createElement('fieldset');
+            fieldset.className = 'essence-editor-weekdays';
+            const legend = document.createElement('legend');
+            legend.textContent = field.label;
+            fieldset.appendChild(legend);
+            const selected = Array.isArray(field.value) ? field.value.map(Number) : [];
+            ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'].forEach((day, i) => {
+                const label = document.createElement('label');
+                const input = document.createElement('input');
+                input.type = 'checkbox';
+                input.name = field.name;
+                input.value = String(i);
+                input.checked = selected.includes(i);
+                label.append(input, document.createTextNode(day));
+                fieldset.appendChild(label);
+            });
+            $('editorFields').appendChild(fieldset);
+            continue;
+        }
         const label = document.createElement('label');
         label.textContent = field.label;
         const input = document.createElement('input');
@@ -769,7 +792,11 @@ function openEditor({title, fields, onSave}) {
 
     form.onsubmit = async event => {
         event.preventDefault();
-        const values = Object.fromEntries(new FormData(form));
+        const formData = new FormData(form);
+        const values = Object.fromEntries(formData);
+        fields.filter(field => field.type === 'weekdays').forEach(field => {
+            values[field.name] = formData.getAll(field.name).map(Number);
+        });
         form.querySelectorAll('[data-currency]').forEach(input => { values[input.name] = parsePriceInput(input.value); });
         const error = await onSave(values);
         if (error) {
@@ -843,7 +870,7 @@ function editBusiness() {
             {name: 'category', label: 'Categoria', value: b.category},
             {name: 'open', label: 'Abertura (HH:MM)', value: b.hours?.open || '09:00'},
             {name: 'close', label: 'Fechamento (HH:MM)', value: b.hours?.close || '18:00'},
-            {name: 'days', label: 'Dias da semana (0=Dom, 1=Seg ... 6=Sáb; separados por vírgula)', value: (b.hours?.days || [0,1,2,3,4,5,6]).join(',')},
+            {name: 'days', label: 'Dias de atendimento', type: 'weekdays', value: b.hours?.days ?? [0,1,2,3,4,5,6]},
             {name: 'instagram', label: 'Instagram (URL opcional)', value: b.instagram || '', required: false},
             {name: 'website', label: 'Site oficial (URL opcional)', value: b.website || '', required: false},
             {name: 'whatsapp', label: 'WhatsApp com DDD (opcional)', value: b.whatsapp || '', required: false},
@@ -855,9 +882,9 @@ function editBusiness() {
             const name = values.name.trim(), description = values.description.trim(), location = values.location.trim();
             if (!name || !description || !location || !values.category.trim()) return 'Preencha nome, descrição, categoria e localização.';
             const open = values.open.trim(), close = values.close.trim();
-            const days = [...new Set(values.days.split(',').map(x => Number(x.trim())))];
+            const days = [...new Set(values.days)];
             if (!/^([01]\d|2[0-3]):[0-5]\d$/.test(open) || !/^([01]\d|2[0-3]):[0-5]\d$/.test(close) || minutes(close) <= minutes(open)) return 'Informe horários válidos.';
-            if (!days.length || days.some(d => !Number.isInteger(d) || d < 0 || d > 6)) return 'Informe dias entre 0 e 6 separados por vírgula.';
+            if (!days.length || days.some(d => !Number.isInteger(d) || d < 0 || d > 6)) return 'Selecione pelo menos um dia de atendimento.';
             if ((values.instagram && !safeExternalUrl(values.instagram)) || (values.maps && !safeExternalUrl(values.maps)) || (values.website && !safeExternalUrl(values.website))) return 'Use links completos com https://';
             const whatsapp = values.whatsapp.replace(/\D/g, '');
             if (whatsapp && (whatsapp.length < 10 || whatsapp.length > 13)) return 'Informe WhatsApp com DDD.';
@@ -1017,12 +1044,14 @@ function addNotice() {
     const title = $('noticeTitle')?.value.trim();
     const message = $('noticeMessage')?.value.trim();
     const color = $('noticeColor')?.value;
+    const start = $('noticeStart')?.value || today();
     const until = $('noticeUntil')?.value || '';
     if (!b || !title || !message) { notify('Informe título e mensagem do aviso.'); return; }
-    if (until && until < today()) { notify('Escolha uma data de validade futura.'); return; }
+    if (start < today()) { notify('A data de início não pode estar no passado.'); return; }
+    if (until && until < start) { notify('A data de fim deve ser igual ou posterior à data de início.'); return; }
     b.notices ||= [];
     b.notices.push({id: `msg_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`,
-        title, message, color: color === 'red' ? 'red' : 'green', until});
+        title, message, color: color === 'red' ? 'red' : 'green', start, until});
     save(); renderAdmin(); notify('Aviso publicado.');
 }
 
