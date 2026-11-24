@@ -9,6 +9,48 @@
     <link rel="stylesheet" href="css/style.css"/>
 </head>
 <body>
+<section id="loginScreen" class="essence-login-screen" aria-labelledby="loginScreenTitle">
+    <div class="essence-login-brand">
+        <img src="assets/logo_transparente.png" alt="Essence — More than a look">
+    </div>
+    <div class="essence-login-layout">
+        <div class="essence-login-intro">
+            <span class="eyebrow">MORE THAN A LOOK</span>
+            <h1>Seu próximo momento começa aqui.</h1>
+            <p>Agende seus cuidados ou gerencie seu estabelecimento em um só lugar.</p>
+            <div class="essence-login-pills"><span>Agendamentos</span><span>Gestão simplificada</span><span>Experiência Essence</span>
+            </div>
+        </div>
+        <div class="essence-login-panel">
+            <div id="accessChoice">
+                <span class="eyebrow dark">BEM-VINDO AO ESSENCE</span>
+                <h2 id="loginScreenTitle">Como deseja entrar?</h2>
+                <p class="muted">Escolha o tipo de acesso para continuar.</p>
+                <div class="essence-access-options">
+                    <button type="button" class="essence-access-card" data-access-role="client">
+                        <span class="essence-access-icon">♙</span><strong>Sou cliente</strong>
+                        <small>Encontre serviços e agende seu horário.</small><span
+                            class="essence-access-arrow">→</span>
+                    </button>
+                    <button type="button" class="essence-access-card" data-access-role="business">
+                        <span class="essence-access-icon">▦</span><strong>Sou estabelecimento</strong>
+                        <small>Acesse o painel de gerenciamento.</small><span class="essence-access-arrow">→</span>
+                    </button>
+                </div>
+                <div class="essence-login-links">
+                    <p>Ainda não tem uma conta?
+                        <button type="button" id="loginClientSignup">Cadastre-se gratuitamente</button>
+                    </p>
+                    <p>Tem um negócio?
+                        <button type="button" id="loginBusinessSignup">Cadastre seu estabelecimento</button>
+                    </p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <p class="essence-login-disclaimer"><span></span> Protótipo acadêmico · Acesso demonstrativo · Dados fictícios</p>
+</section>
 <header class="topbar">
     <a class="brand" href="#inicio" aria-label="Essence, início"><img class="essence-logo"
                                                                       src="assets/logo_transparente.png"
@@ -16,15 +58,15 @@
     <nav aria-label="Navegação principal"><a href="#inicio">Início</a><a href="#explorar">Explorar</a><a
             href="#como-funciona">Como funciona</a><a class="partner-link" href="#parceiros">Cadastre seu
         estabelecimento</a>
-        <button id="accountNav" class="nav-admin" type="button">Entrar / Cadastre-se</button>
-        <button id="adminNav" class="nav-admin" type="button">Painel demonstrativo</button>
+        <button id="accountNav" class="nav-admin" type="button" hidden>Minha conta</button>
     </nav>
 </header>
 <main>
     <section class="hero" id="inicio">
         <div class="hero-content"><span class="eyebrow">SEU PRÓXIMO MOMENTO COMEÇA AQUI</span>
             <h1>Seu estilo. Seu tempo.<br><em>Sua essência.</em></h1>
-            <p>Descubra lugares incríveis, escolha seu serviço favorito e agende em poucos cliques. Crie uma conta demonstrativa para acompanhar suas reservas.</p>
+            <p>Descubra lugares incríveis, escolha seu serviço favorito e agende em poucos cliques. Crie uma conta
+                demonstrativa para acompanhar suas reservas.</p>
             <a class="primary-button" href="#explorar">Encontrar um estabelecimento <span>→</span></a>
             <div class="hero-proof"><span>✓ Agendamento simples</span><span>✓ Sua conta Essence</span><span>✓ Horários disponíveis</span>
             </div>
@@ -47,7 +89,8 @@
                 <p>Selecione serviço, profissional, data e horário.</p></article>
             <article><b>03</b>
                 <h3>Confirme</h3>
-                <p>Entre ou cadastre-se gratuitamente na demonstração para confirmar e acompanhar seu horário.</p></article>
+                <p>Entre ou cadastre-se gratuitamente na demonstração para confirmar e acompanhar seu horário.</p>
+            </article>
         </div>
     </section>
     <section class="section explore" id="explorar">
@@ -73,11 +116,11 @@
                     atendimentos em um só lugar.</p>
                 <div class="partner-benefits"><span>✓ Agenda organizada</span><span>✓ Serviços e equipe</span><span>✓ Reservas sem complicação</span>
                 </div>
-                <button type="button" id="partnerInterest" class="primary-button">Simular cadastro do estabelecimento
+                <button type="button" id="partnerInterest" class="primary-button">Cadastrar meu estabelecimento
                     →
                 </button>
-                <p class="partner-note">Este cadastro é apenas uma simulação local, sem conta, autenticação ou
-                    publicação na internet.</p></div>
+                <p class="partner-note">Cadastro demonstrativo em duas etapas: primeiro os dados de acesso e depois as
+                    configurações do negócio.</p></div>
             <div class="partner-card"><span class="eyebrow dark">PARA ESTABELECIMENTOS</span>
                 <h3>Como vai funcionar?</h3>
                 <ol>
@@ -95,6 +138,55 @@
                                          alt="Essence — More than a look"></div>
     <p>Protótipo acadêmico demonstrativo · Dados armazenados apenas neste navegador.</p><small>© 2026 Essence — Projeto
     acadêmico</small></footer>
+<dialog id="businessLoginDialog" class="dialog essence-account-dialog" aria-labelledby="businessLoginTitle">
+    <form id="businessLoginForm" class="essence-account-form">
+        <div class="dialog-head">
+            <div><span class="eyebrow dark">ÁREA DO ESTABELECIMENTO</span>
+                <h2 id="businessLoginTitle">Entrar no painel</h2></div>
+            <button type="button" class="close" data-close="businessLoginDialog" aria-label="Fechar">×</button>
+        </div>
+        <p class="muted">Acesso demonstrativo. Use qualquer e-mail e senha fictícios.</p>
+        <label>E-mail comercial<input id="businessLoginEmail" type="email" required maxlength="120" autocomplete="off"
+                                      placeholder="contato@seunegocio.com"></label>
+        <label>Senha<input id="businessLoginPassword" type="password" required autocomplete="off"
+                           placeholder="Digite qualquer senha fictícia"></label>
+        <p id="businessLoginError" class="error" role="alert"></p>
+        <button type="submit" class="primary-button">Entrar no painel →</button>
+        <p class="essence-account-switch">Ainda não tem um estabelecimento?
+            <button type="button" id="businessSignupFromLogin">Cadastre-se gratuitamente</button>
+        </p>
+    </form>
+</dialog>
+<dialog id="partnerAccountDialog" class="dialog essence-account-dialog" aria-labelledby="partnerAccountTitle">
+    <form id="partnerAccountForm" class="essence-account-form">
+        <div class="dialog-head">
+            <div><span class="eyebrow dark">CADASTRO DE ESTABELECIMENTO · ETAPA 1 DE 2</span>
+                <h2 id="partnerAccountTitle">Crie sua conta comercial</h2></div>
+            <button type="button" class="close" data-close="partnerAccountDialog" aria-label="Fechar">×</button>
+        </div>
+        <p class="muted">Informe os dados de acesso. Depois, você poderá configurar as informações do seu
+            estabelecimento.</p>
+        <label>E-mail comercial
+            <input id="partnerAccountEmail" name="email" type="email" required maxlength="120" autocomplete="off"
+                   placeholder="contato@seunegocio.com">
+        </label>
+        <label>Senha demonstrativa
+            <input id="partnerAccountPassword" name="password" type="password" required minlength="4"
+                   autocomplete="new-password" placeholder="Crie uma senha fictícia">
+        </label>
+        <label>Confirmar senha
+            <input id="partnerAccountPasswordConfirm" name="passwordConfirm" type="password" required minlength="4"
+                   autocomplete="new-password" placeholder="Digite a senha novamente">
+        </label>
+        <p class="muted">Protótipo acadêmico: a senha não será armazenada nem validada como uma conta real. Utilize
+            somente dados fictícios.</p>
+        <p id="partnerAccountError" class="error" role="alert"></p>
+        <div class="dialog-actions">
+            <button type="button" class="secondary-button" data-close="partnerAccountDialog">Cancelar</button>
+            <button type="submit" class="primary-button">Continuar para configurações →</button>
+        </div>
+    </form>
+</dialog>
 <dialog id="partnerDialog" class="dialog partner-dialog">
     <form id="partnerForm">
         <div class="dialog-head">
@@ -102,8 +194,8 @@
                 <h2>Seu estabelecimento no Essence</h2></div>
             <button type="button" class="close" data-close="partnerDialog" aria-label="Fechar">×</button>
         </div>
-        <p class="muted">Simule o cadastro de um negócio. As informações ficam somente neste navegador. Não existe conta
-            ou publicação real.</p>
+        <p class="muted">Etapa 2 de 2: configure seu negócio. As informações ficam somente neste navegador; não existe
+            autenticação ou publicação real.</p>
         <div class="form-grid"><label>Nome do estabelecimento<input name="businessName" required maxlength="70"
                                                                     placeholder="Ex.: Barbearia Central"></label><label>Categoria<select
                 name="category">
@@ -133,7 +225,8 @@
                 Sex</label><label><input type="checkbox" name="day" value="6" checked> Sáb</label><label><input
                     type="checkbox" name="day" value="0"> Dom</label></fieldset>
             <label class="full-span">Profissionais (um nome por linha)<textarea name="professionals" rows="3" required
-                                                                                placeholder="Phellipe&#10;Vitória"></textarea></label><div class="full-span essence-service-builder">
+                                                                                placeholder="Phellipe&#10;Vitória"></textarea></label>
+            <div class="full-span essence-service-builder">
                 <h3>Serviços oferecidos</h3>
                 <p class="muted">Cadastre cada serviço com nome, preço e duração.</p>
                 <div id="partnerServices"></div>
@@ -154,7 +247,8 @@
                 <div class="essence-social-grid">
                     <label>Instagram (link completo)
                         <input name="instagram" type="url" placeholder="https://www.instagram.com/seuperfil/">
-                    </label><label>Site oficial (opcional)<input name="website" type="url" placeholder="https://seusite.com.br">
+                    </label><label>Site oficial (opcional)<input name="website" type="url"
+                                                                 placeholder="https://seusite.com.br">
                 </label>
                     <label>WhatsApp (DDD + número)
                         <input name="whatsapp" type="tel" inputmode="tel" placeholder="31999999999">
@@ -173,14 +267,50 @@
     </form>
 </dialog>
 <dialog id="accountDialog" class="dialog essence-account-dialog" aria-labelledby="accountTitle">
-    <div class="dialog-head"><div><span class="eyebrow dark">CONTA DEMONSTRATIVA</span><h2 id="accountTitle">Minha conta Essence</h2></div><button type="button" class="close" data-close="accountDialog" aria-label="Fechar">×</button></div>
-    <p class="muted">Protótipo local: sem autenticação real. Use apenas informações fictícias. Qualquer e-mail e senha fictícios podem ser usados. Não utilize senhas reais: elas não são verificadas nem armazenadas.</p>
-    <div id="accountGuest">
-        <div class="essence-account-tabs"><button type="button" id="showLogin" class="secondary-button">Entrar</button><button type="button" id="showSignup" class="secondary-button">Cadastre-se</button></div>
-        <form id="loginForm" class="essence-account-form"><label>E-mail<input id="loginEmail" type="email" autocomplete="off" required maxlength="120" placeholder="cliente@exemplo.com"></label><label>Senha demonstrativa<input id="loginCode" type="password" required placeholder="Digite qualquer senha fictícia" autocomplete="off"></label><button class="primary-button" type="submit">Entrar na demonstração</button></form>
-        <form id="signupForm" class="essence-account-form" hidden><label>Nome completo<input id="signupName" required maxlength="80" autocomplete="off"></label><label>E-mail<input id="signupEmail" type="email" required maxlength="120" autocomplete="off"></label><label>Telefone/WhatsApp<input id="signupPhone" type="tel" required maxlength="20" placeholder="(31) 99999-9999" autocomplete="off"></label><label>Senha<input id="signupPassword" type="password" required autocomplete="off" placeholder="Crie uma senha fictícia"></label><label>Confirmar senha<input id="signupPasswordConfirm" type="password" required autocomplete="off" placeholder="Repita a senha fictícia"></label><button class="primary-button" type="submit">Criar conta demonstrativa</button></form>
+    <div class="dialog-head">
+        <div><span class="eyebrow dark">CONTA DEMONSTRATIVA</span>
+            <h2 id="accountTitle">Minha conta Essence</h2></div>
+        <button type="button" class="close" data-close="accountDialog" aria-label="Fechar">×</button>
     </div>
-    <div id="accountLogged" hidden><div id="accountProfile"></div><div class="essence-account-tabs"><button type="button" id="accountAppointments" class="secondary-button">Meus agendamentos</button><button type="button" id="accountOrders" class="secondary-button">Minhas compras</button><button type="button" id="accountEdit" class="secondary-button">Editar perfil</button></div><div id="accountDetails" class="essence-account-details"></div><button id="accountLogout" type="button" class="secondary-button">Sair da conta</button></div>
+    <p class="muted">Protótipo local: sem autenticação real. Use apenas informações fictícias. Qualquer e-mail e senha
+        fictícios podem ser usados. Não utilize senhas reais: elas não são verificadas nem armazenadas.</p>
+    <div id="accountGuest">
+        <form id="loginForm" class="essence-account-form"><label>E-mail<input id="loginEmail" type="email"
+                                                                              autocomplete="off" required
+                                                                              maxlength="120"
+                                                                              placeholder="cliente@exemplo.com"></label><label>Senha
+            demonstrativa<input id="loginCode" type="password" required placeholder="Digite qualquer senha fictícia"
+                                autocomplete="off"></label>
+            <button class="primary-button" type="submit">Entrar</button>
+        </form>
+        <form id="signupForm" class="essence-account-form" hidden><label>Nome completo<input id="signupName" required
+                                                                                             maxlength="80"
+                                                                                             autocomplete="off"></label><label>E-mail<input
+                id="signupEmail" type="email" autocomplete="off" required maxlength="120"></label><label>Telefone/WhatsApp<input
+                id="signupPhone" type="tel" required maxlength="20" placeholder="(31) 99999-9999"
+                autocomplete="off"></label><label>Senha<input id="signupPassword" type="password" required
+                                                              autocomplete="off" placeholder="Crie uma senha fictícia"></label><label>Confirmar
+            senha<input id="signupPasswordConfirm" type="password" required autocomplete="off"
+                        placeholder="Repita a senha fictícia"></label>
+            <button class="primary-button" type="submit">Criar conta demonstrativa</button>
+        </form>
+        <p class="essence-account-switch" id="clientLoginSwitch">Ainda não tem uma conta?
+            <button type="button" id="clientSignupLink">Cadastre-se gratuitamente</button>
+        </p>
+        <p class="essence-account-switch" id="clientSignupSwitch" hidden>Já tem uma conta?
+            <button type="button" id="clientLoginLink">Voltar para entrar</button>
+        </p>
+    </div>
+    <div id="accountLogged" hidden>
+        <div id="accountProfile"></div>
+        <div class="essence-account-tabs">
+            <button type="button" id="accountAppointments" class="secondary-button">Meus agendamentos</button>
+            <button type="button" id="accountOrders" class="secondary-button">Minhas compras</button>
+            <button type="button" id="accountEdit" class="secondary-button">Editar perfil</button>
+        </div>
+        <div id="accountDetails" class="essence-account-details"></div>
+        <button id="accountLogout" type="button" class="secondary-button">Sair da conta</button>
+    </div>
     <p id="accountError" class="error" role="alert"></p>
 </dialog>
 <dialog id="bookingDialog" class="dialog">
@@ -194,31 +324,37 @@
         </div>
         <div class="form-grid"><label>Serviço<select id="serviceSelect"
                                                      required></select></label><label>Profissional<select
-                id="professionalSelect" required></select></label><div class="booking-date-field"><span class="booking-date-label">Data</span>
-            <input id="dateInput" type="hidden" required>
-            <button id="calendarToggle" class="calendar-toggle" type="button" aria-expanded="false" aria-controls="bookingCalendar" aria-label="Escolher data">
-                <span id="calendarSelectedLabel">Selecione uma data</span><span aria-hidden="true">▦</span>
-            </button>
-            <div id="bookingCalendar" class="booking-calendar" hidden>
-                <div class="calendar-heading">
-                    <button type="button" id="calendarPrev" aria-label="Mês anterior">‹</button>
-                    <strong id="calendarMonthLabel"></strong>
-                    <button type="button" id="calendarNext" aria-label="Próximo mês">›</button>
+                id="professionalSelect" required></select></label>
+            <div class="booking-date-field"><span class="booking-date-label">Data</span>
+                <input id="dateInput" type="hidden" required>
+                <button id="calendarToggle" class="calendar-toggle" type="button" aria-expanded="false"
+                        aria-controls="bookingCalendar" aria-label="Escolher data">
+                    <span id="calendarSelectedLabel">Selecione uma data</span><span aria-hidden="true">▦</span>
+                </button>
+                <div id="bookingCalendar" class="booking-calendar" hidden>
+                    <div class="calendar-heading">
+                        <button type="button" id="calendarPrev" aria-label="Mês anterior">‹</button>
+                        <strong id="calendarMonthLabel"></strong>
+                        <button type="button" id="calendarNext" aria-label="Próximo mês">›</button>
+                    </div>
+                    <div class="calendar-weekdays" aria-hidden="true">
+                        <span>Dom</span><span>Seg</span><span>Ter</span><span>Qua</span><span>Qui</span><span>Sex</span><span>Sáb</span>
+                    </div>
+                    <div id="calendarDays" class="calendar-days" role="group" aria-label="Dias disponíveis"></div>
+                    <p class="calendar-help">Datas indisponíveis ficam desabilitadas. Consulte os avisos de ausência ao
+                        lado da data.</p>
                 </div>
-                <div class="calendar-weekdays" aria-hidden="true"><span>Dom</span><span>Seg</span><span>Ter</span><span>Qua</span><span>Qui</span><span>Sex</span><span>Sáb</span></div>
-                <div id="calendarDays" class="calendar-days" role="group" aria-label="Dias disponíveis"></div>
-                <p class="calendar-help">Datas indisponíveis ficam desabilitadas. Consulte os avisos de ausência ao lado da data.</p>
             </div>
-        </div>
             <div id="bookingNotices" class="booking-notices full-span" aria-live="polite" hidden></div>
             <fieldset class="slots">
                 <legend>Horários disponíveis</legend>
                 <div id="slotsContainer" class="slot-grid"></div>
                 <input id="timeInput" type="hidden" required></fieldset>
-            <p class="muted full-span">O agendamento será vinculado à conta demonstrativa conectada.</p><label>Seu nome<input id="clientName" type="text" placeholder="Nome completo" maxlength="80"
-                                                                                                                              required></label><label>Telefone<input id="clientPhone" type="tel"
-                                                                                                                                                                     placeholder="(31) 99999-9999" maxlength="20"
-                                                                                                                                                                     required></label></div>
+            <p class="muted full-span">O agendamento será vinculado à conta demonstrativa conectada.</p><label>Seu
+                nome<input id="clientName" type="text" placeholder="Nome completo" maxlength="80"
+                           required></label><label>Telefone<input id="clientPhone" type="tel"
+                                                                  placeholder="(31) 99999-9999" maxlength="20"
+                                                                  required></label></div>
         <p id="bookingError" class="error" role="alert"></p>
         <div class="dialog-actions">
             <button type="button" class="secondary-button" data-close="bookingDialog">Cancelar</button>
@@ -249,8 +385,8 @@
 <dialog id="adminDialog" class="dialog admin-dialog">
     <div class="dialog-head">
         <div><span class="eyebrow dark">ÁREA DEMONSTRATIVA</span>
-            <h2>Painel do estabelecimento</h2></div>
-        <button type="button" class="close" data-close="adminDialog" aria-label="Fechar">×</button>
+            <h2>Painel de gestão</h2>
+            <p class="admin-heading-note">Gerencie sua agenda, equipe, serviços e operação em um só lugar.</p></div>
     </div>
     <p class="muted">Acesso de demonstração, sem autenticação. Dados compartilhados apenas com este navegador.</p><label
         class="admin-picker">Estabelecimento<select id="adminBusiness"></select></label>
@@ -269,11 +405,13 @@
     <div id="adminContent"></div>
     <div class="admin-footer">
         <button id="resetDemo" type="button" class="text-button">Restaurar dados de demonstração</button>
+        <button id="businessLogout" type="button" class="secondary-button">Sair da conta</button>
     </div>
 </dialog>
 <dialog id="editorDialog" class="dialog essence-action-dialog" aria-labelledby="editorTitle">
     <div class="dialog-head">
-        <div><span class="eyebrow dark">PAINEL ESSENCE</span><h2 id="editorTitle">Editar</h2></div>
+        <div><span class="eyebrow dark">PAINEL ESSENCE</span>
+            <h2 id="editorTitle">Editar</h2></div>
         <button type="button" class="close" data-close="editorDialog" aria-label="Fechar">×</button>
     </div>
     <form id="editorForm">
@@ -287,7 +425,8 @@
 </dialog>
 <dialog id="confirmDialog" class="dialog essence-action-dialog" aria-labelledby="confirmTitle">
     <div class="dialog-head">
-        <div><span class="eyebrow dark">CONFIRMAÇÃO</span><h2 id="confirmTitle">Confirmar ação</h2></div>
+        <div><span class="eyebrow dark">CONFIRMAÇÃO</span>
+            <h2 id="confirmTitle">Confirmar ação</h2></div>
         <button type="button" class="close" data-close="confirmDialog" aria-label="Fechar">×</button>
     </div>
     <p id="confirmMessage" class="muted"></p>
@@ -338,7 +477,8 @@
             const saved = JSON.parse(localStorage.getItem('essence_demo_v4') || '{}');
             business = (Array.isArray(saved.businesses) ? saved.businesses : [])
                 .find(item => item.id === businessId && item.catalogEnabled);
-        } catch (_) { /* Dados indisponíveis ou inválidos. */ }
+        } catch (_) { /* Dados indisponíveis ou inválidos. */
+        }
         if (!business) {
             subtitle.textContent = 'Catálogo indisponível neste navegador. Os dados desta demonstração não são compartilhados entre dispositivos.';
             return;
@@ -349,7 +489,11 @@
         const money = new Intl.NumberFormat('pt-BR', {style: 'currency', currency: 'BRL'});
         const cartKey = 'essence_cart_v1_' + businessId;
         let cart = {};
-        try { cart = JSON.parse(localStorage.getItem(cartKey) || '{}') || {}; } catch (_) { cart = {}; }
+        try {
+            cart = JSON.parse(localStorage.getItem(cartKey) || '{}') || {};
+        } catch (_) {
+            cart = {};
+        }
         const layout = document.createElement('div');
         layout.className = 'essence-store-layout';
         grid.replaceWith(layout);
@@ -374,11 +518,17 @@
         clearButton.type = 'button';
         clearButton.className = 'secondary-button essence-cart-clear';
         clearButton.textContent = 'Esvaziar carrinho';
-        clearButton.addEventListener('click', () => { cart = {}; persistCart(); renderCart(); });
+        clearButton.addEventListener('click', () => {
+            cart = {};
+            persistCart();
+            renderCart();
+        });
         cartPanel.appendChild(clearButton);
         const checkoutButton = document.createElement('button');
-        checkoutButton.type = 'button'; checkoutButton.className = 'primary-button essence-checkout';
+        checkoutButton.type = 'button';
+        checkoutButton.className = 'primary-button essence-checkout';
         checkoutButton.textContent = 'Finalizar pedido demonstrativo';
+
         // Notificações internas, sem alertas nativos do navegador.
         function showCheckoutNotice(message, kind = 'success') {
             let notice = document.getElementById('essence-checkout-notice');
@@ -401,26 +551,59 @@
             clearTimeout(notice._hideTimer);
             notice._hideTimer = setTimeout(() => notice.classList.remove('is-visible'), error ? 6500 : 5500);
         }
+
         checkoutButton.addEventListener('click', () => {
             const sessionId = sessionStorage.getItem('essence_client_session_v1');
-            let saved; try { saved = JSON.parse(localStorage.getItem('essence_demo_v4') || '{}'); } catch (_) { saved = {}; }
+            let saved;
+            try {
+                saved = JSON.parse(localStorage.getItem('essence_demo_v4') || '{}');
+            } catch (_) {
+                saved = {};
+            }
             const client = (saved.clients || []).find(x => x.id === sessionId);
-            if (!client) { showCheckoutNotice('Entre ou cadastre-se antes de confirmar o pedido.', 'error'); return; }
-            const items = products.filter(p => Number(cart[p.id]) > 0).map(p => ({productId:p.id, name:p.name, quantity:Number(cart[p.id]), unitPrice:Number(p.price)||0}));
+            if (!client) {
+                showCheckoutNotice('Entre ou cadastre-se antes de confirmar o pedido.', 'error');
+                return;
+            }
+            const items = products.filter(p => Number(cart[p.id]) > 0).map(p => ({
+                productId: p.id,
+                name: p.name,
+                quantity: Number(cart[p.id]),
+                unitPrice: Number(p.price) || 0
+            }));
             if (!items.length) return;
-            const totalValue = items.reduce((sum,x)=>sum+x.quantity*x.unitPrice,0);
+            const totalValue = items.reduce((sum, x) => sum + x.quantity * x.unitPrice, 0);
             saved.orders = Array.isArray(saved.orders) ? saved.orders : [];
-            saved.orders.push({id:'o'+Date.now(), clientId:client.id, businessId, items, total:totalValue, createdAt:new Date().toISOString(), status:'demonstrativo'});
-            try { localStorage.setItem('essence_demo_v4', JSON.stringify(saved)); }
-            catch (_) { showCheckoutNotice('Não foi possível salvar o pedido neste navegador.', 'error'); return; }
-            cart={};persistCart();renderCart();showCheckoutNotice('Nenhum pagamento foi realizado. Consulte os detalhes em Minha conta.');
+            saved.orders.push({
+                id: 'o' + Date.now(),
+                clientId: client.id,
+                businessId,
+                items,
+                total: totalValue,
+                createdAt: new Date().toISOString(),
+                status: 'demonstrativo'
+            });
+            try {
+                localStorage.setItem('essence_demo_v4', JSON.stringify(saved));
+            } catch (_) {
+                showCheckoutNotice('Não foi possível salvar o pedido neste navegador.', 'error');
+                return;
+            }
+            cart = {};
+            persistCart();
+            renderCart();
+            showCheckoutNotice('Nenhum pagamento foi realizado. Consulte os detalhes em Minha conta.');
         });
         cartPanel.appendChild(checkoutButton);
 
         function persistCart() {
-            try { localStorage.setItem(cartKey, JSON.stringify(cart)); }
-            catch (_) { cartInfo.textContent = 'Não foi possível salvar o carrinho neste navegador.'; }
+            try {
+                localStorage.setItem(cartKey, JSON.stringify(cart));
+            } catch (_) {
+                cartInfo.textContent = 'Não foi possível salvar o carrinho neste navegador.';
+            }
         }
+
         function renderCart() {
             cartContents.replaceChildren();
             let sum = 0;
@@ -446,7 +629,8 @@
                         const next = Math.max(0, (Number(cart[product.id]) || 0) + change);
                         if (next) cart[product.id] = next;
                         else delete cart[product.id];
-                        persistCart(); renderCart();
+                        persistCart();
+                        renderCart();
                     });
                     controls.appendChild(button);
                     if (change < 0) {
@@ -465,8 +649,10 @@
                 cartContents.appendChild(empty);
             }
             total.textContent = 'Total estimado: ' + money.format(sum);
-            clearButton.disabled = !count; checkoutButton.disabled = !count;
+            clearButton.disabled = !count;
+            checkoutButton.disabled = !count;
         }
+
         if (!products.length) {
             const empty = document.createElement('p');
             empty.className = 'muted';
@@ -503,7 +689,8 @@
             add.textContent = 'Adicionar ao carrinho';
             add.addEventListener('click', () => {
                 cart[product.id] = Math.min(99, (Number(cart[product.id]) || 0) + 1);
-                persistCart(); renderCart();
+                persistCart();
+                renderCart();
             });
             card.appendChild(add);
             grid.appendChild(card);
@@ -513,3 +700,4 @@
 </script>
 </body>
 </html>
+

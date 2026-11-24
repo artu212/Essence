@@ -54,9 +54,102 @@ function save() {
 
 /* Contas locais de demonstração: nenhum segredo/senha é armazenado. */
 const CLIENT_SESSION = 'essence_client_session_v1';
+const ACCESS_ROLE = 'essence_access_role_v1';
+const BUSINESS_SESSION = 'essence_business_session_v1';
 let pendingBooking = null;
+let pendingPartnerAccountEmail = '';
 let accountMode = 'login';
 function currentClient() { return data.clients.find(c => c.id === sessionStorage.getItem(CLIENT_SESSION)) || null; }
+function showLoginScreen() {
+    sessionStorage.removeItem(CLIENT_SESSION);
+    sessionStorage.removeItem(BUSINESS_SESSION);
+    sessionStorage.removeItem(ACCESS_ROLE);
+    document.body.classList.remove('essence-authenticated', 'essence-business-mode');
+    $('loginScreen').hidden = false;
+    $('accessChoice').hidden = false;
+    $('accountNav').hidden = true;
+    if ($('accountDialog').open) $('accountDialog').close();
+    if ($('adminDialog').open) $('adminDialog').close();
+    window.scrollTo({top: 0, behavior: 'instant'});
+}
+function enterClientArea() {
+    sessionStorage.setItem(ACCESS_ROLE, 'client');
+    document.body.classList.add('essence-authenticated');
+    document.body.classList.remove('essence-business-mode');
+    $('loginScreen').hidden = true;
+    $('accountNav').hidden = false;
+    $('accountNav').textContent = 'Minha conta';
+}
+function enterBusinessArea(businessId = null) {
+    sessionStorage.setItem(ACCESS_ROLE, 'business');
+    if (businessId) sessionStorage.setItem(BUSINESS_SESSION, businessId);
+    document.body.classList.add('essence-authenticated', 'essence-business-mode');
+    $('loginScreen').hidden = true;
+    $('accountNav').hidden = true;
+    openAdmin(sessionStorage.getItem(BUSINESS_SESSION));
+}
+function initializeAccess() {
+    const role = sessionStorage.getItem(ACCESS_ROLE);
+    if (role === 'client' && currentClient()) {
+        enterClientArea();
+    } else if (role === 'business') {
+        enterBusinessArea(sessionStorage.getItem(BUSINESS_SESSION));
+    } else {
+        showLoginScreen();
+    }
+}
+$('loginScreen').addEventListener('click', event => {
+    const roleButton = event.target.closest('[data-access-role]');
+    if (roleButton) {
+        if (roleButton.dataset.accessRole === 'client') {
+            openAccount('login');
+        } else {
+            $('businessLoginError').textContent = '';
+            $('businessLoginForm').reset();
+            $('businessLoginDialog').showModal();
+        }
+        return;
+    }
+    if (event.target.closest('#loginClientSignup')) {
+        openAccount('signup');
+        return;
+    }
+    if (event.target.closest('#loginBusinessSignup')) {
+        openPartnerRegistration();
+    }
+});
+$('businessSignupFromLogin').addEventListener('click', () => {
+    $('businessLoginDialog').close();
+    openPartnerRegistration();
+});
+$('businessLoginForm').addEventListener('submit', event => {
+    event.preventDefault();
+    const email = $('businessLoginEmail').value.trim().toLowerCase();
+    const password = $('businessLoginPassword').value;
+    if (!email || !password) {
+        $('businessLoginError').textContent = 'Informe o e-mail e a senha demonstrativa.';
+        return;
+    }
+    // Login fictício: usa o estabelecimento associado ao e-mail, quando houver;
+    // caso contrário, abre o estabelecimento de demonstração padrão.
+    const owned = data.businesses.find(b => (b.ownerEmail || '').toLowerCase() === email);
+    const business = owned || data.businesses[0];
+    if (!business) {
+        $('businessLoginError').textContent = 'Nenhum estabelecimento disponível para demonstração.';
+        return;
+    }
+    $('businessLoginPassword').value = '';
+    $('businessLoginDialog').close();
+    enterBusinessArea(business.id);
+});
+function openPartnerRegistration() {
+    $('partnerAccountError').textContent = '';
+    $('partnerAccountForm').reset();
+    pendingPartnerAccountEmail = '';
+    $('partnerAccountDialog').showModal();
+}
+$('businessLogout').addEventListener('click', showLoginScreen);
+
 function openAccount(mode = 'login') {
     $('accountError').textContent = '';
     if (mode === 'signup' || mode === 'login') accountMode = mode;
@@ -69,10 +162,8 @@ function renderAccount() {
     $('accountLogged').hidden = !client;
     $('loginForm').hidden = accountMode !== 'login';
     $('signupForm').hidden = accountMode !== 'signup';
-    $('showLogin').classList.toggle('active', accountMode === 'login');
-    $('showSignup').classList.toggle('active', accountMode === 'signup');
-    $('showLogin').setAttribute('aria-pressed', String(accountMode === 'login'));
-    $('showSignup').setAttribute('aria-pressed', String(accountMode === 'signup'));
+    $('clientLoginSwitch').hidden = accountMode !== 'login';
+    $('clientSignupSwitch').hidden = accountMode !== 'signup';
     $('accountNav').textContent = client ? 'Minha conta' : 'Entrar / Cadastre-se';
     if (!client) return;
     $('accountProfile').innerHTML = `<p><strong>${escapeHtml(client.name)}</strong><br><small>${escapeHtml(client.email)} · ${escapeHtml(client.phone)}</small></p>`;
@@ -93,8 +184,8 @@ function renderAccountDetails(section) {
     $('accountDetails').innerHTML = bookings.length ? bookings.map(b => `<div class="admin-item"><div><strong>${escapeHtml(findBusiness(b.businessId)?.name || 'Estabelecimento')} · ${escapeHtml(findService(findBusiness(b.businessId),b.serviceId)?.name || 'Serviço')}</strong><small>${localDate(b.date)} às ${escapeHtml(b.time)} · ${b.status === 'cancelled' ? 'Cancelado' : 'Ativo'}</small></div>${b.status === 'active' ? `<div class="admin-actions"><button type="button" data-my-edit="${escapeHtml(b.id)}">Reagendar</button><button type="button" data-my-cancel="${escapeHtml(b.id)}">Cancelar</button></div>` : ''}</div>`).join('') : '<p class="muted">Você ainda não possui agendamentos vinculados à conta.</p>';
 }
 $('accountNav').addEventListener('click', () => openAccount());
-$('showLogin').addEventListener('click', () => {accountMode='login';renderAccount();});
-$('showSignup').addEventListener('click', () => {accountMode='signup';renderAccount();});
+$('clientSignupLink').addEventListener('click', () => { accountMode = 'signup'; $('accountError').textContent = ''; renderAccount(); });
+$('clientLoginLink').addEventListener('click', () => { accountMode = 'login'; $('accountError').textContent = ''; renderAccount(); });
 /* Fluxo exclusivamente demonstrativo: qualquer senha não vazia funciona.
    Senhas digitadas nunca são persistidas nem comparadas com dados anteriores. */
 function finishDemoEntry(client) {
@@ -104,6 +195,8 @@ function finishDemoEntry(client) {
     $('signupPasswordConfirm').value = '';
     $('accountError').textContent = '';
     renderAccount();
+    enterClientArea();
+    $('accountDialog').close();
     if (pendingBooking) {
         const next = pendingBooking;
         pendingBooking = null;
@@ -160,7 +253,7 @@ $('loginForm').addEventListener('submit', e => {
     finishDemoEntry(client);
     notify('Entrada demonstrativa realizada.');
 });
-$('accountLogout').addEventListener('click',()=>{sessionStorage.removeItem(CLIENT_SESSION);renderAccount();notify('Você saiu da conta demonstrativa.');});
+$('accountLogout').addEventListener('click', () => { showLoginScreen(); notify('Você saiu da conta demonstrativa.'); });
 $('accountAppointments').addEventListener('click',()=>renderAccountDetails('appointments'));
 $('accountOrders').addEventListener('click',()=>renderAccountDetails('orders'));
 $('accountEdit').addEventListener('click',()=>renderAccountDetails('edit'));
@@ -1070,9 +1163,9 @@ function askConfirmation(title, message, onConfirm, destructive = false) {
     dialog.showModal();
 }
 
-function openAdmin() {
+function openAdmin(businessId = null) {
     const select = $('adminBusiness');
-    const prev = select.value;
+    const prev = businessId || select.value || sessionStorage.getItem(BUSINESS_SESSION);
     select.innerHTML = selectOptions(data.businesses, b => b.name);
     if (data.businesses.some(b => b.id === prev)) select.value = prev;
     adminTab = 'appointments';
@@ -1105,7 +1198,7 @@ $('clearSearch').addEventListener('click', () => {
     renderBusinesses();
     $('search').focus()
 });
-$('adminNav').addEventListener('click', openAdmin);
+
 document.querySelectorAll('[data-close]').forEach(btn => btn.addEventListener('click', () => $(btn.dataset.close).close()));
 ['serviceSelect', 'professionalSelect'].forEach(id => $(id).addEventListener('change', renderSlots));
 $('bookingNotices').addEventListener('click', event => {
@@ -1237,9 +1330,39 @@ renderFilters();
 renderBusinesses();
 syncBusinessRoute();
 
-$('partnerInterest').addEventListener('click', () => {
+$('partnerInterest').addEventListener('click', openPartnerRegistration);
+
+$('partnerAccountForm').addEventListener('submit', event => {
+    event.preventDefault();
+    const email = $('partnerAccountEmail').value.trim().toLowerCase();
+    const password = $('partnerAccountPassword').value;
+    const confirmation = $('partnerAccountPasswordConfirm').value;
+    const error = $('partnerAccountError');
+    error.textContent = '';
+
+    if (!email || !password || !confirmation) {
+        error.textContent = 'Preencha o e-mail e os dois campos de senha.';
+        return;
+    }
+    if (password.length < 4) {
+        error.textContent = 'A senha demonstrativa deve ter pelo menos 4 caracteres.';
+        return;
+    }
+    if (password !== confirmation) {
+        error.textContent = 'A confirmação precisa ser igual à senha digitada.';
+        return;
+    }
+
+    // A senha é descartada; somente o e-mail comercial será associado ao cadastro local.
+    pendingPartnerAccountEmail = email;
+    $('partnerAccountPassword').value = '';
+    $('partnerAccountPasswordConfirm').value = '';
+    $('partnerAccountDialog').close();
     $('partnerError').textContent = '';
-    $('partnerDialog').showModal()
+    $('partnerForm').reset();
+    $('partnerServices').replaceChildren();
+    addPartnerServiceRow();
+    $('partnerDialog').showModal();
 });
 /* Cadastro guiado de serviços, sem sintaxe de ponto e vírgula. */
 function addPartnerServiceRow(name = '', price = 0, duration = 30) {
@@ -1309,6 +1432,7 @@ $('partnerForm').addEventListener('submit', async e => {
     }
     const id = 'b' + Date.now();
     data.businesses.push({
+        ownerEmail: pendingPartnerAccountEmail,
         catalogEnabled: fd.get('catalogEnabled') === 'yes',
         products: [], instagram, website, whatsapp, maps,
         id,
@@ -1332,8 +1456,9 @@ $('partnerForm').addEventListener('submit', async e => {
     $('partnerServices').replaceChildren();
     addPartnerServiceRow();
     $('partnerDialog').close();
+    pendingPartnerAccountEmail = '';
     notify('Estabelecimento criado nesta demonstração!');
-    $('explorar').scrollIntoView({behavior: 'smooth'});
+    enterBusinessArea(id);
 });
 
 
@@ -1372,7 +1497,7 @@ function restoreFields(root, values) {
 
 function saveInterfaceState() {
     try {
-        const dialogs = ['accountDialog', 'partnerDialog', 'bookingDialog', 'adminDialog', 'editorDialog', 'confirmDialog', 'noticesDialog', 'confirmationDialog'];
+        const dialogs = ['accountDialog', 'businessLoginDialog', 'partnerAccountDialog', 'partnerDialog', 'bookingDialog', 'adminDialog', 'editorDialog', 'confirmDialog', 'noticesDialog', 'confirmationDialog'];
         const state = {
             dialogs: dialogs.filter(id => $(id)?.open),
             category,
@@ -1427,6 +1552,8 @@ function restoreInterfaceState() {
         restoreFields($('adminContent'), state.adminFields);
         if ($('blockMode')) $('blockMode').dispatchEvent(new Event('change', {bubbles: true}));
     }
+    if (opened.includes('businessLoginDialog')) $('businessLoginDialog').showModal();
+    if (opened.includes('partnerAccountDialog')) $('partnerAccountDialog').showModal();
     if (opened.includes('partnerDialog')) {
         $('partnerDialog').showModal();
         restoreFields($('partnerForm'), state.partnerFields);
@@ -1479,5 +1606,7 @@ $('adminContent').addEventListener('click', event => {
 
 window.addEventListener('pagehide', saveInterfaceState);
 window.addEventListener('beforeunload', saveInterfaceState);
+initializeAccess();
 restoreInterfaceState();
 renderAccount();
+
