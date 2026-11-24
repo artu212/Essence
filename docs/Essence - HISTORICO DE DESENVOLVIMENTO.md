@@ -164,8 +164,43 @@ Após revisão visual, foram definidos e ajustados os seguintes comportamentos:
 - Maior espaçamento entre **Bloquear na agenda** e **Ausências cadastradas**.
 - Ajustes de largura dos campos em dispositivos móveis, ainda sujeitos a testes no iPhone e outros navegadores.
 
-**Situação:** alterações preparadas nos arquivos locais. O commit, o push, a confirmação da publicação e os testes completos desta atualização ainda não foram informados como concluídos.
+**Situação registrada naquele momento:** alterações preparadas nos arquivos locais, ainda aguardando publicação e testes. A publicação posterior foi confirmada; ver seções 16 e 17.
 
 ## 15. Cuidados para encerramento
 
 Antes de considerar a atualização finalizada, testar navegação por link direto, agendamento, produtos, avisos, bloqueios de agenda, login demonstrativo, formulários no celular e preservação dos dados locais. A versão continua acadêmica, sem autenticação segura, banco central ou pagamentos reais.
+
+## 16. Revisão após testes móveis — 17/11/2026
+
+Após a implementação das páginas individuais dos estabelecimentos, foram identificadas oportunidades de melhoria durante a avaliação em celulares Android e iPhone.
+
+- Revisão do enquadramento de botões, abas e campos, especialmente na área **Minha conta** e nos formulários de edição.
+- Substituição da edição textual dos dias de funcionamento por caixas de seleção, alinhadas ao fluxo de cadastro.
+- Remoção da área vazia de capa quando o estabelecimento não possui imagem cadastrada.
+- Inclusão de data inicial e data final opcional para os **avisos gerais**, com regras de exibição conforme a vigência.
+- Distinção entre **avisos gerais** (apresentados na página pública) e **indisponibilidades** (apresentadas na página e no agendamento).
+- Remoção do cartão de serviços da página individual, mantendo a seleção de serviços dentro do fluxo de agendamento.
+- Preservação do formulário original de **folgas, feriados e férias**, que alterna os campos conforme o tipo de ausência; uma alteração experimental nessa lógica foi revertida.
+
+Essas correções foram integradas ao projeto. Posteriormente, o código foi versionado e a publicação da versão mais recente foi conferida pelo usuário. Os testes funcionais completos e as evidências da equipe ainda precisam ser consolidados.
+
+## 17. Remoção de elementos decorativos e publicação confirmada — 17/11/2026
+
+Durante os testes da página inicial em dispositivo móvel, foi observada sobreposição entre o texto do destaque inicial e os círculos decorativos ao redor do ícone de calendário. Foram realizadas tentativas de ajuste de posicionamento e tamanho, mas o problema persistiu.
+
+A solução final adotada foi remover os dois círculos do HTML e ocultar os estilos correspondentes no CSS, preservando o ícone e o conteúdo textual. A alteração evitou depender de posicionamentos frágeis em diferentes larguras de tela.
+
+**Commit confirmado:** `b9786fe` — `fix: remove circulos decorativos do hero e ajusta layout mobile`.
+
+O terminal registrou `HEAD` e `origin/master` no mesmo commit, `nothing to commit, working tree clean` e `Everything up-to-date` após o push. O usuário confirmou que o site publicado estava funcionando.
+
+## 18. Preparação da documentação final da A3 — 17/11/2026
+
+Com o software publicado, a prioridade passou a ser a conclusão da **Sprint 2 — Projeto Final e Pitch**, com prazo previsto para **18/11/2026** no Ânima Hub.
+
+- Protótipos informados como concluídos.
+- Conteúdo textual inicial da documentação (introdução, problema, justificativa, objetivos, público-alvo, escopo e requisitos) preparado para adequação ao template oficial.
+- Atualização de `README.md`, `STATUS.md` e histórico de desenvolvimento preparada para commit documental separado.
+- Testes independentes da equipe, evidências, documento final, Pitch e envio oficial ainda dependem de confirmação.
+
+**Observação:** o projeto continua sendo uma demonstração acadêmica baseada em armazenamento local, sem autenticação segura, banco centralizado ou pagamentos reais. A documentação deve preservar essa distinção.

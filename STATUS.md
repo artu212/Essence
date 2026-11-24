@@ -4,96 +4,95 @@
 **Repositório:** https://github.com/artu212/Essence  
 **Demonstração:** https://artu212.github.io/Essence/  
 **Branch:** `master`  
-**Último commit confirmado:** `10166a3` — atualização de contas demonstrativas e experiência do cliente.
-**Nova versão:** páginas individuais de estabelecimentos e ajustes de avisos/contatos; aguardando commit e push.
+**Último commit de código confirmado:** `b9786fe` — `fix: remove circulos decorativos do hero e ajusta layout mobile`  
+**Situação:** software publicado e conferido; finalização acadêmica em andamento.
 
 ## Resumo executivo
 
-O **Essence** está implementado como protótipo web demonstrativo, com recursos de agendamento, gestão de estabelecimentos, serviços e profissionais, além de catálogo opcional de produtos e carrinho. O código da atualização anterior foi enviado ao GitHub com sucesso no commit `10166a3`. A atualização das páginas individuais está preparada localmente, mas ainda não foi enviada. A etapa atual é **validação pela equipe, correção de eventuais falhas e conclusão dos materiais acadêmicos**.
+O **Essence — More than a look** é um protótipo acadêmico de plataforma web para descoberta de estabelecimentos e agendamentos de serviços. Inclui páginas individuais, agenda, painel demonstrativo de gestão, contas fictícias e catálogo opcional com carrinho. A aplicação utiliza HTML, CSS, JavaScript e armazenamento local no navegador, sem back-end ou autenticação real.
 
-> O envio do código ao GitHub não comprova, por si só, que todos os fluxos passaram por testes independentes ou que a versão mais recente já foi verificada no GitHub Pages.
+Em 17/11/2026, o usuário confirmou que o site está funcionando após o commit `b9786fe`. O terminal mostrou `HEAD` e `origin/master` no mesmo commit, árvore de trabalho limpa e `Everything up-to-date` no push. Isso confirma a sincronização do código, **não** a aprovação de todos os testes nem a conclusão da entrega da A3.
 
 ## Andamento das entregas
 
 | Atividade | Situação | Observação |
 |---|---|---|
-| Definição de tema, proposta e escopo | Concluída | Plataforma de agendamentos para diferentes tipos de estabelecimento. |
-| Nome, slogan e identidade visual | Definidos | Essence — *More than a look*. |
-| Estrutura HTML, CSS e JavaScript | Implementada | Aplicação estática, sem back-end. |
-| Busca e páginas individuais de estabelecimentos | Implementadas localmente | Link compartilhável, capa, contatos, serviços e produtos; validar e publicar. |
-| Cadastro e edição de estabelecimentos | Implementados | Dados persistidos no navegador. |
-| Serviços, profissionais e horários | Implementados | Inclui melhorias nos campos de cadastro e preços. |
-| Agendamentos e gestão de disponibilidade | Implementados | Inclui bloqueios, gerenciamento e avisos. |
-| Catálogo opcional e carrinho | Implementados | Carrinho demonstrativo, sem pagamento ou pedido real. |
-| Imagens de produtos e estabelecimentos | Atualizadas | Anexo opcional, prévia na edição e ajustes de exibição. |
-| Interface móvel | Ajustada; validação pendente | Foram trabalhados scroll, zoom e responsividade; testar em dispositivos reais. |
-| Persistência via `localStorage` | Implementada | Dados locais, sem sincronização entre usuários. |
-| Commit e push da atualização anterior | Concluídos | `10166a3` enviado para `origin/master`. |
-| Commit e push das páginas individuais | **Pendentes** | Conferir arquivos, testar, versionar e enviar. |
-| Contas e login demonstrativos | Implementados | Múltiplos perfis locais; sem autenticação real. |
-| Avisos gerais e indisponibilidades | Ajustados localmente | Gerais apenas na página; indisponibilidades também na agenda. |
-| Verificação da versão mais recente no GitHub Pages | A confirmar | Abrir a URL e conferir as alterações publicadas. |
-| Testes independentes da equipe | **Pendentes** | Gustavo e Rafael devem testar e registrar resultados. |
-| Evidências e registro de bugs | **Pendentes** | Anotar cenários, resultados e correções. |
-| README e documentos de acompanhamento | Preparados para inclusão | Esta revisão documental ainda precisa ser commitada. |
-| Relatório e demais entregáveis acadêmicos | A confirmar | Conferir requisitos finais da disciplina. |
-| Apresentação final | **Pendente** | Preparar demonstração e divisão de falas. |
+| Tema, proposta, escopo e identidade visual | Concluídos | Essence — *More than a look*. |
+| Protótipos de telas | Concluídos | Informação confirmada pelo grupo. |
+| Aplicação web e interface responsiva | Implementadas e publicadas | Site conferido após o último commit. |
+| Busca e páginas individuais | Implementadas | Links compartilháveis, capa opcional, contatos, avisos e catálogo. |
+| Cadastro/edição de estabelecimentos | Implementados | Dados locais ao navegador. |
+| Serviços, profissionais e horários | Implementados | Serviços selecionados no fluxo de agendamento. |
+| Agendamentos, bloqueios e indisponibilidades | Implementados | Regras e formulários revisados; testes completos ainda a consolidar. |
+| Contas e área Minha conta | Implementadas | Contas demonstrativas, sem autenticação segura. |
+| Catálogo e carrinho | Implementados | Sem pagamento ou pedido real. |
+| Ajustes de responsividade móvel | Publicados | Inclui remoção dos círculos decorativos do hero. |
+| Versionamento e GitHub Pages | Confirmados | `b9786fe`, `master` sincronizada, site funcionando. |
+| Testes independentes de Gustavo e Rafael | Em andamento | Aguardar relatório e evidências. |
+| README, STATUS e histórico | Atualização preparada | Arquivos precisam ser copiados e commitados. |
+| Documento final da A3 | Pendente | Conteúdo textual inicial preparado; adequar ao template oficial. |
+| Apresentação / Pitch | Pendente de confirmação | Preparar/validar material e demonstração final. |
+| Envio da Sprint 2 no Ânima Hub | Não confirmado | Prazo informado: 18/11/2026. |
 
-## Funcionalidades disponíveis
+## Funcionalidades atuais
 
-### Agendamentos
+### Cliente
 
-- Pesquisa e consulta de estabelecimentos.
-- Seleção de serviços, profissionais e horários.
-- Contas demonstrativas com múltiplos perfis e área Minha conta.
-- Gestão demonstrativa de agendamentos, bloqueios e avisos.
+- Pesquisa de estabelecimentos e navegação por páginas individuais.
+- Consulta de serviços, profissionais, horários e informações do estabelecimento.
+- Agendamento, consulta, cancelamento e reagendamento demonstrativos.
+- Cadastro/login fictícios e área Minha conta.
+- Catálogo opcional, carrinho e pedidos demonstrativos.
 
-### Administração demonstrativa
+### Estabelecimento
 
-- Cadastro e edição de estabelecimentos.
-- Gestão de profissionais, serviços, duração e preços.
-- Configuração de dias e horários de atendimento.
-- Links opcionais de contato e localização na página individual do estabelecimento.
-- Foto de capa, descrição e endereço compartilhável por estabelecimento.
+- Cadastro e edição de informações, capa, descrição e links de contato/localização.
+- Administração de serviços, profissionais, preços e horários de funcionamento.
+- Seleção de dias de atendimento por caixas de seleção.
+- Gestão de agendamentos, folgas, feriados e períodos de indisponibilidade.
+- Avisos gerais com data de início e data final opcional.
+- Gestão de produtos e exibição opcional de catálogo.
 
-### Produtos
+### Interface e persistência
 
-- Catálogo opcional por estabelecimento.
-- Cadastro, edição e exclusão de produtos.
-- Imagem opcional e prévia durante edição.
-- Carrinho com quantidades e totalização.
-- Navegação entre catálogo e página principal na mesma aba.
+- Layout responsivo com ajustes recentes para dispositivos móveis.
+- Capa omitida quando o estabelecimento não possui imagem.
+- Cartão de serviços removido da página individual; seleção permanece no agendamento.
+- Círculos decorativos da seção inicial removidos para evitar sobreposição em telas pequenas.
+- Persistência demonstrativa via `localStorage` e sessão local, sem sincronização entre dispositivos.
 
-## Equipe e responsabilidades
+## Equipe
 
-| Integrante | Responsabilidade no projeto | Foco recomendado nesta etapa |
-|---|---|---|
-| Arthur Costa | Desenvolvimento, integração, Git e coordenação | Corrigir bugs, consolidar documentação e coordenar apresentação. |
-| Gustavo Trega | Protótipos e usabilidade | Testar fluxos, responsividade e carrinho. |
-| Rafael Alexandre | Requisitos e documentação | Conferir requisitos, registrar testes e apoiar documentação. |
+| Integrante | Atuação |
+|---|---|
+| Arthur Costa | Desenvolvimento, integração, versionamento e coordenação. |
+| Gustavo Trega | Protótipos, usabilidade e testes. |
+| Rafael Alexandre | Requisitos, documentação e testes. |
 
-As responsabilidades representam a organização informada do projeto; testes e documentos só devem ser marcados como concluídos quando houver entrega efetiva.
+## Pendências prioritárias para 18/11/2026
+
+1. Obter/conferir o **template oficial** de documentação do professor.
+2. Consolidar introdução, problema, justificativa, objetivos, público-alvo, escopo e requisitos já preparados.
+3. Inserir protótipos prontos, casos de uso, fluxos, diagrama de classes e modelo de dados, conforme aplicável.
+4. Receber e registrar os resultados dos testes da equipe; corrigir somente falhas relevantes e retestar.
+5. Preparar/revisar o Pitch e a demonstração do sistema com participação da equipe.
+6. Conferir formato, anexos e **envio efetivo** do Projeto Final e Pitch pelo Ânima Hub.
+7. Versionar estes três documentos em um commit próprio após substituí-los no repositório.
 
 ## Riscos e limitações
 
-1. **Armazenamento local:** não há sincronização de dados entre navegadores ou usuários.
-2. **Sem autenticação:** o painel não é seguro para operação comercial real.
-3. **Sem pagamentos ou pedidos reais:** catálogo e carrinho são demonstrativos.
-4. **Compatibilidade móvel:** é necessária validação em navegadores e telas reais.
-5. **Prazo acadêmico:** priorizar estabilidade e evidências, evitando novas funcionalidades nesta etapa.
+- O armazenamento local não permite sincronização real entre usuários ou dispositivos.
+- O cadastro/login e o painel administrativo são demonstrativos e não oferecem segurança de produção.
+- O carrinho não processa pagamentos, pedidos comerciais ou estoque real.
+- Testes independentes e evidências finais ainda não foram consolidados.
+- A documentação precisa corresponder ao comportamento realmente implementado e ao template oficial.
 
-## Próximos passos
+## Critério de encerramento
 
-1. Testar localmente a página individual, links compartilháveis, contatos e avisos em PC e celular.
-2. Realizar commit e push do código e dos documentos atualizados.
-3. Confirmar a atualização publicada no GitHub Pages.
-4. Compartilhar a URL com Gustavo e Rafael para testes independentes.
-5. Registrar cada cenário de teste, resultado esperado, resultado observado, dispositivo e evidência.
-6. Corrigir falhas encontradas e repetir os testes afetados.
-7. Conferir a versão final de `README.md`, `STATUS.md` e do histórico de desenvolvimento.
-8. Finalizar os materiais exigidos pela disciplina e ensaiar a demonstração.
-9. Sincronizar o PC de casa com cuidado, preservando alterações locais antes de atualizar a branch.
+**Software publicado:** confirmado.  
+**Documentação final validada no template:** pendente.  
+**Testes registrados e revisados:** pendente.  
+**Pitch/apresentação final:** pendente de confirmação.  
+**Entrega oficial no Ânima Hub:** não confirmada.
 
-## Critério de conclusão
-
-A implementação está publicada no repositório, mas **a entrega acadêmica não deve ser considerada encerrada** até a validação da equipe, o registro dos resultados e a finalização dos materiais exigidos pelo professor.
+A A3 só deve ser marcada como concluída após a confirmação dos entregáveis exigidos pela disciplina.

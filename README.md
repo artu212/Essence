@@ -20,7 +20,7 @@ Facilitar a descoberta de estabelecimentos e o agendamento de serviços, permiti
 ### Para clientes
 
 - Pesquisa de estabelecimentos e acesso a **páginas individuais**, com links compartilháveis.
-- Consulta de capa, descrição, serviços, produtos, avisos e informações de contato/localização.
+- Consulta de capa (quando cadastrada), descrição, produtos, avisos e informações de contato/localização; serviços são selecionados no fluxo de agendamento.
 - Consulta de serviços, profissionais e horários disponíveis.
 - Cadastro e entrada em contas **demonstrativas**, com múltiplos perfis fictícios no mesmo navegador.
 - Área **Minha conta** para perfil, agendamentos e pedidos associados ao cliente demonstrativo.
@@ -46,7 +46,7 @@ Facilitar a descoberta de estabelecimentos e o agendamento de serviços, permiti
 - Exibição de imagens de produtos sem distorção intencional.
 - Navegação entre página principal e catálogo na mesma aba.
 - Persistência local de dados via `localStorage` e sessão demonstrativa via `sessionStorage`, sujeitas aos limites do navegador.
-- Formulários e cartões adaptados para telas pequenas, com validação móvel ainda necessária.
+- Formulários e cartões adaptados para telas pequenas; ajustes visuais foram realizados e testes completos em diferentes dispositivos ainda precisam ser consolidados.
 
 ## Tecnologias
 
@@ -107,6 +107,15 @@ O projeto foi planejado e desenvolvido em etapas, com acompanhamento de tarefas 
 - [`STATUS.md`](STATUS.md) — andamento da entrega acadêmica.
 - [`docs/Essence - HISTORICO DE DESENVOLVIMENTO.md`](docs/Essence%20-%20HISTORICO%20DE%20DESENVOLVIMENTO.md) — registro resumido da evolução.
 
-## Situação atual
+## Situação atual — 17/11/2026
 
-**Versão anterior publicada:** commit `10166a3`, confirmado em `master` em 17/11/2026. **Nova atualização:** páginas individuais, avisos e contatos ajustados no código local; commit, push e conferência no GitHub Pages ainda pendentes. Testes independentes e apresentação acadêmica também pendentes.
+- **Versão do código publicada e conferida:** commit `b9786fe` na branch `master` (`fix: remove circulos decorativos do hero e ajusta layout mobile`).
+- **Git:** `HEAD` e `origin/master` sincronizados; `git status` informou `nothing to commit, working tree clean`; `git push` informou `Everything up-to-date`.
+- **GitHub Pages:** usuário confirmou que o site está funcionando após a última atualização.
+- **Ajustes recentes:** páginas individuais de estabelecimentos, responsividade móvel, seleção de dias de atendimento, avisos gerais com período de vigência, formulários de indisponibilidade, remoção do cartão de serviços da página individual e remoção dos círculos decorativos da seção inicial.
+- **Protótipos:** concluídos conforme informação da equipe.
+- **Testes:** equipe realizando verificações; resultados e evidências consolidados ainda pendentes.
+- **Documentação da A3:** conteúdo inicial de problema, justificativa, objetivos, escopo e requisitos preparado; documento final no template oficial ainda não concluído.
+- **Entrega acadêmica:** Sprint 2 (Projeto Final e Pitch) prevista para **18/11/2026** pelo Ânima Hub; envio não confirmado. Apresentação conforme cronograma da disciplina.
+
+A publicação do software **não equivale à conclusão da A3**. Antes da entrega, conferir a documentação no template do professor, os testes, a apresentação e os arquivos efetivamente submetidos.
